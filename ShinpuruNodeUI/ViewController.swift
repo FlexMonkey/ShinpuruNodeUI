@@ -8,18 +8,44 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
+class ViewController: UIViewController, SNDelegate
+{
+    let shinpuruNodeUI: SNView = SNView()
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        view.addSubview(shinpuruNodeUI)
+        
+        let one = DemoNode(name: "One", position: CGPoint(x: 10, y: 10), value: DemoNodeValue.float(value: 1))
+        
+        let two = DemoNode(name: "Two", position: CGPoint(x: 20, y: 150), value: DemoNodeValue.float(value: 2))
+        
+        let result = DemoNode(name: "Result", position: CGPoint(x: 170, y: 70), type: DemoNodeType.Addition, inputs: [one, two])
+        
+        shinpuruNodeUI.nodes = [one, two, result]
+        
+        shinpuruNodeUI.nodeDelegate = self
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: SNDelegate
+    
+    func itemRenderer(view:SNView) -> SNItemRenderer
+    {
+        return DemoRenderer()
     }
-
-
+    
 }
+
+class DemoRenderer: SNItemRenderer
+{
+    override func didMoveToSuperview()
+    {
+        backgroundColor = UIColor.redColor()
+        
+        print( (node as? DemoNode)?.value )
+    }
+}
+
 
