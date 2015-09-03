@@ -46,6 +46,6 @@ enum DemoNodeType
 
 enum DemoNodeValue
 {
-    case float(value: Float)
-    case image(value: UIImage)
+    case Number(Float)
+    case Image(UIImage)
 }

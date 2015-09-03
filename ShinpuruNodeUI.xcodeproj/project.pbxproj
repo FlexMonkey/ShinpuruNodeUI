@@ -15,8 +15,10 @@
 		3E7C17801B957B0F000DC1E4 /* ShinpuruNodeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C177F1B957B0F000DC1E4 /* ShinpuruNodeUITests.swift */; };
 		3E7C178B1B957B0F000DC1E4 /* ShinpuruNodeUIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C178A1B957B0F000DC1E4 /* ShinpuruNodeUIUITests.swift */; };
 		3E7C179B1B957B93000DC1E4 /* SNView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C179A1B957B93000DC1E4 /* SNView.swift */; settings = {ASSET_TAGS = (); }; };
-		3E7C179D1B957BBC000DC1E4 /* ShinpuruNodeDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C179C1B957BBC000DC1E4 /* ShinpuruNodeDataTypes.swift */; settings = {ASSET_TAGS = (); }; };
-		3EE37A171B961E1600F87EE1 /* DemoClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A161B961E1600F87EE1 /* DemoClasses.swift */; settings = {ASSET_TAGS = (); }; };
+		3EE37A191B96CAFE00F87EE1 /* SNNodeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A181B96CAFE00F87EE1 /* SNNodeWidget.swift */; settings = {ASSET_TAGS = (); }; };
+		3EE37A1C1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1B1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift */; settings = {ASSET_TAGS = (); }; };
+		3EE37A1E1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1D1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift */; settings = {ASSET_TAGS = (); }; };
+		3EE37A201B97634700F87EE1 /* DemoClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1F1B97634700F87EE1 /* DemoClasses.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,8 +53,10 @@
 		3E7C178A1B957B0F000DC1E4 /* ShinpuruNodeUIUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinpuruNodeUIUITests.swift; sourceTree = "<group>"; };
 		3E7C178C1B957B0F000DC1E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E7C179A1B957B93000DC1E4 /* SNView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SNView.swift; path = shinpuru/SNView.swift; sourceTree = "<group>"; };
-		3E7C179C1B957BBC000DC1E4 /* ShinpuruNodeDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShinpuruNodeDataTypes.swift; sourceTree = "<group>"; };
-		3EE37A161B961E1600F87EE1 /* DemoClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoClasses.swift; sourceTree = "<group>"; };
+		3EE37A181B96CAFE00F87EE1 /* SNNodeWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SNNodeWidget.swift; path = shinpuru/SNNodeWidget.swift; sourceTree = "<group>"; };
+		3EE37A1B1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SNRelationshipCurvesLayer.swift; path = shinpuru/SNRelationshipCurvesLayer.swift; sourceTree = "<group>"; };
+		3EE37A1D1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShinpuruNodeDataTypes.swift; path = shinpuru/ShinpuruNodeDataTypes.swift; sourceTree = "<group>"; };
+		3EE37A1F1B97634700F87EE1 /* DemoClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DemoClasses.swift; path = demoProject/DemoClasses.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,7 +141,9 @@
 			isa = PBXGroup;
 			children = (
 				3E7C179A1B957B93000DC1E4 /* SNView.swift */,
-				3E7C179C1B957BBC000DC1E4 /* ShinpuruNodeDataTypes.swift */,
+				3EE37A1D1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift */,
+				3EE37A181B96CAFE00F87EE1 /* SNNodeWidget.swift */,
+				3EE37A1B1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift */,
 			);
 			name = shinpuru;
 			sourceTree = "<group>";
@@ -145,7 +151,7 @@
 		3EE37A151B961DFC00F87EE1 /* demoProject */ = {
 			isa = PBXGroup;
 			children = (
-				3EE37A161B961E1600F87EE1 /* DemoClasses.swift */,
+				3EE37A1F1B97634700F87EE1 /* DemoClasses.swift */,
 			);
 			name = demoProject;
 			sourceTree = "<group>";
@@ -280,9 +286,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3EE37A171B961E1600F87EE1 /* DemoClasses.swift in Sources */,
+				3EE37A201B97634700F87EE1 /* DemoClasses.swift in Sources */,
+				3EE37A191B96CAFE00F87EE1 /* SNNodeWidget.swift in Sources */,
+				3EE37A1E1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift in Sources */,
 				3E7C176D1B957B0F000DC1E4 /* ViewController.swift in Sources */,
-				3E7C179D1B957BBC000DC1E4 /* ShinpuruNodeDataTypes.swift in Sources */,
+				3EE37A1C1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift in Sources */,
 				3E7C176B1B957B0F000DC1E4 /* AppDelegate.swift in Sources */,
 				3E7C179B1B957B93000DC1E4 /* SNView.swift in Sources */,
 			);
