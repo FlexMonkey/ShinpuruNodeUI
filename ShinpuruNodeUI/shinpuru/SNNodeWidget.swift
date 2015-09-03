@@ -19,10 +19,7 @@ class SNNodeWidget: UIView
         self.shinpuruNodeView = shinpuruNodeView
         self.node = node
         
-        super.init(frame: CGRect(x: node.position.x,
-            y: node.position.y,
-            width: 100,
-            height: 100))
+        super.init(frame: CGRect(origin: node.position, size: CGSizeZero))
         
         let pan = UIPanGestureRecognizer(target: self, action: "panHandler:")
         addGestureRecognizer(pan)
@@ -48,19 +45,18 @@ class SNNodeWidget: UIView
                 
                 itemRenderer.node = node
                 
-                itemRenderer.frame = CGRect(x: 4,
-                    y: 4,
+                itemRenderer.frame = CGRect(x: 0,
+                    y: 0,
                     width: itemRenderer.intrinsicContentSize().width,
                     height: itemRenderer.intrinsicContentSize().height)
                 
                 frame = CGRect(x: frame.origin.x,
                     y: frame.origin.y,
                     width: itemRenderer.intrinsicContentSize().width,
-                    height: itemRenderer.intrinsicContentSize().height).insetBy(dx: -4, dy: -4)
+                    height: itemRenderer.intrinsicContentSize().height + CGFloat(node.inputCount * SNInputRowHeight))
             }
         }
     }
-    
     
     func panHandler(recognizer: UIPanGestureRecognizer)
     {
@@ -84,12 +80,16 @@ class SNNodeWidget: UIView
             
             self.previousPanPoint = gestureLocation
             
-            shinpuruNodeView.nodeDelegate?.nodeMoved(shinpuruNodeView, node: node)
+            node.position = newPosition
+            
+            shinpuruNodeView.nodeMoved(shinpuruNodeView, node: node)
+            
+            print(node.name, node.uuid)
         }
     }
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.redColor()
+        backgroundColor = UIColor.darkGrayColor()
     }
 }

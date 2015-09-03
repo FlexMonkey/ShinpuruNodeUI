@@ -18,6 +18,8 @@ class SNView: UIScrollView
         }
     }
     
+    var widgetsDictionary = [SNNode: SNNodeWidget]() // needs to be a tuple of widget and size metrics (e.g. item renderer, input count * row height)
+    
     weak var nodeDelegate: SNDelegate? // todo: on set of this, rerender nodes
     
     let curvesLayer = SNRelationshipCurvesLayer()
@@ -27,16 +29,15 @@ class SNView: UIScrollView
     {
         backgroundColor = UIColor.blackColor()
         
-        nodesView.backgroundColor = UIColor.darkGrayColor()
-        
         layer.addSublayer(curvesLayer)
         
         addSubview(nodesView)
     }
     
-    func renderRelationships()
+    func nodeMoved(view: SNView, node: SNNode)
     {
-        curvesLayer.nodes = nodes
+        nodeDelegate?.nodeMoved(self, node: node)
+        renderRelationships()
     }
     
     func renderNodes()
@@ -48,11 +49,26 @@ class SNView: UIScrollView
         
         for node in nodes
         {
-            let widget = SNNodeWidget(shinpuruNodeView: self, node: node)
-            
-            widget.itemRenderer = nodeDelegate?.itemRenderer(self)
-            
-            nodesView.addSubview(widget)
+            if widgetsDictionary[node] == nil
+            {
+                let widget = SNNodeWidget(shinpuruNodeView: self, node: node)
+                
+                widgetsDictionary[node] = widget
+                
+                widget.itemRenderer = nodeDelegate?.itemRenderer(self)
+                
+                nodesView.addSubview(widget)
+            }
+        }
+        
+        renderRelationships()
+    }
+    
+    func renderRelationships()
+    {
+        if let nodes = nodes
+        {
+            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary)
         }
     }
 }

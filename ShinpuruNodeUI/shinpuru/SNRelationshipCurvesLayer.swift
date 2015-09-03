@@ -11,62 +11,64 @@ import UIKit
 class SNRelationshipCurvesLayer: CAShapeLayer
 {
     var relationshipCurvesPath = UIBezierPath()
-    
-    var nodes: [SNNode]?
-    {
-        didSet
-        {
-            renderRelationships()
-        }
-    }
-    
-    func renderRelationships()
-    {
-        guard let nodes = nodes else
-        {
-            return
-        }
         
+    func renderRelationships(nodes: [SNNode], widgetsDictionary: [SNNode: SNNodeWidget])
+    {
         strokeColor = UIColor.whiteColor().CGColor
         lineWidth = 2
         fillColor = nil
+        lineCap = kCALineCapSquare
         
         drawsAsynchronously = true
         
         relationshipCurvesPath.removeAllPoints()
         
-        for targetNode in nodes
+        for sourceNode in nodes
         {
-            let targetWidgetHeight = CGFloat(100)
-            let targetWidgetHeightInt = Int(targetWidgetHeight)
+            guard let sourceItemRenderer = widgetsDictionary[sourceNode]?.itemRenderer else
+            {
+                continue
+            }
             
-            let rect = CGRect(x: CGFloat(targetNode.position.x + 1), y: CGFloat(targetNode.position.y + 1), width: 100 - 2, height: targetWidgetHeight - 2)
-            let rectPath = UIBezierPath(roundedRect: rect, cornerRadius: 10)
+            let sourceWidgetHeight = sourceItemRenderer.intrinsicContentSize().height + CGFloat(sourceNode.inputCount * SNInputRowHeight)
+            let sourceWidgetWidth = sourceItemRenderer.intrinsicContentSize().width
+            
+            let rect = CGRect(x: CGFloat(sourceNode.position.x),
+                y: CGFloat(sourceNode.position.y),
+                width: sourceWidgetWidth,
+                height: sourceWidgetHeight).insetBy(dx: -(lineWidth / 2), dy: -(lineWidth / 2))
+            
+            let rectPath = UIBezierPath(roundedRect: rect, cornerRadius: 0)
             relationshipCurvesPath.appendPath(rectPath)
-   
-            if let inputs = targetNode.inputs
+            
+            if let inputs = sourceNode.inputs
             {
-            // draw relationships...
-            for (idx, inputNode) in inputs.enumerate()
-            {
-
-
-                    let inputWidgetHeight = CGFloat(100)
-                    let inputWidgetHeightInt = Int(inputWidgetHeight)
+                // draw relationships...
+                for (idx, targetNode) in inputs.enumerate()
+                {
+                    guard let targetItemRenderer = widgetsDictionary[targetNode]?.itemRenderer else
+                    {
+                        continue
+                    }
                     
-                    let inputPosition = CGPoint(x: inputNode.position.x + 100, y: CGFloat(100 / 2) - CGFloat(100) +  inputNode.position.y + CGFloat(100))
+                    let targetWidgetHeight = targetItemRenderer.intrinsicContentSize().height
+                    let targetWidgetWidth = targetItemRenderer.intrinsicContentSize().width
                     
-                    let targetY = targetNode.position.y + CGFloat(idx * 20 + 20) + CGFloat(20 / 2)
+                    let inputPosition = CGPoint(x: targetNode.position.x + targetWidgetWidth,
+                        y: CGFloat(targetWidgetHeight / 2) - CGFloat(targetWidgetHeight) +  targetNode.position.y + CGFloat(targetWidgetHeight))
                     
-                    let targetPosition = CGPoint(x: targetNode.position.x, y: targetY)
+                    let targetY = sourceNode.position.y + targetWidgetHeight + CGFloat(idx * SNInputRowHeight) + CGFloat(SNInputRowHeight / 2)
                     
-                    let controlPointOne = CGPoint(x: targetNode.position.x - 10, y: targetY)
+                    let targetPosition = CGPoint(x: sourceNode.position.x, y: targetY)
                     
-                    let controlPointTwo = CGPoint(x: inputNode.position.x + 100 + 10, y: inputPosition.y)
-               
+                    let controlPointHorizontalOffset = max(abs(targetPosition.x - inputPosition.x), 40) * 0.75
+                    
+                    let controlPointOne = CGPoint(x: targetPosition.x - controlPointHorizontalOffset, y: targetY)
+                    
+                    let controlPointTwo = CGPoint(x: inputPosition.x + controlPointHorizontalOffset, y: inputPosition.y)
+                    
                     relationshipCurvesPath.moveToPoint(targetPosition)
                     relationshipCurvesPath.addCurveToPoint(inputPosition, controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
-
                 }
             }
         }
