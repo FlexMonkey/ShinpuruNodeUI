@@ -12,6 +12,7 @@ class SNNodeWidget: UIView
 {
     let view: SNView
     let node: SNNode
+    var inputRowRenderers = [SNInputRowRenderer]()
     var previousPanPoint: CGPoint?
     
     required init(view: SNView, node: SNNode)
@@ -53,23 +54,29 @@ class SNNodeWidget: UIView
             width: itemRenderer.intrinsicContentSize().width,
             height: itemRenderer.intrinsicContentSize().height)
         
-        frame = CGRect(x: frame.origin.x,
-            y: frame.origin.y,
-            width: itemRenderer.intrinsicContentSize().width,
-            height: itemRenderer.intrinsicContentSize().height + CGFloat(node.inputSlots * SNInputRowHeight))
+        inputRowRenderers.removeAll()
+        var inputRowsHeight: CGFloat = 0
         
         for i in 0 ..< node.inputSlots
         {
             if let inputRowRenderer = view.nodeDelegate?.inputRowRenderer(view: view, node: node, index: i)
             {
                 addSubview(inputRowRenderer)
+                inputRowRenderers.append(inputRowRenderer)
                 
                 inputRowRenderer.frame = CGRect(x: 0,
-                    y: itemRenderer.intrinsicContentSize().height + (CGFloat(i) * inputRowRenderer.intrinsicContentSize().height),
+                    y: itemRenderer.intrinsicContentSize().height + inputRowsHeight,
                     width: inputRowRenderer.intrinsicContentSize().width,
                     height: inputRowRenderer.intrinsicContentSize().height)
+                
+                inputRowsHeight += inputRowRenderer.intrinsicContentSize().height
             }
         }
+        
+        frame = CGRect(x: frame.origin.x,
+            y: frame.origin.y,
+            width: itemRenderer.intrinsicContentSize().width,
+            height: itemRenderer.intrinsicContentSize().height + inputRowsHeight)
     }
     
     func panHandler(recognizer: UIPanGestureRecognizer)
@@ -98,6 +105,11 @@ class SNNodeWidget: UIView
             
             view.nodeMoved(view, node: node)
         }
+    }
+    
+    override func intrinsicContentSize() -> CGSize
+    {
+        return CGSize(width: frame.width, height: frame.height)
     }
     
     override func didMoveToSuperview()

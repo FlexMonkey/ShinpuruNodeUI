@@ -18,12 +18,18 @@ class SNView: UIScrollView
         }
     }
     
-    var widgetsDictionary = [SNNode: SNNodeWidget]() // needs to be a tuple of widget and size metrics (e.g. item renderer, input count * row height)
+    weak var nodeDelegate: SNDelegate?
+    {
+        didSet
+        {
+            renderNodes()
+        }
+    }
     
-    weak var nodeDelegate: SNDelegate? // todo: on set of this, rerender nodes
+    private var widgetsDictionary = [SNNode: SNNodeWidget]() // needs to be a tuple of widget and size metrics (e.g. item renderer, input count * row height)
     
-    let curvesLayer = SNRelationshipCurvesLayer()
-    let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
+    private let curvesLayer = SNRelationshipCurvesLayer()
+    private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
     
     override func didMoveToSuperview()
     {
@@ -55,8 +61,6 @@ class SNView: UIScrollView
                 
                 widgetsDictionary[node] = widget
                 
-                // widget.itemRenderer = nodeDelegate?.itemRenderer(view: self, node: node)
-                
                 nodesView.addSubview(widget)
             }
         }
@@ -70,5 +74,12 @@ class SNView: UIScrollView
         {
             curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary)
         }
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        
+        renderNodes()
     }
 }

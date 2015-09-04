@@ -25,7 +25,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: 100, height: 20)
+        return CGSize(width: 100, height: 20 * (index + 1))
     }
     
     override func layoutSubviews()
