@@ -48,50 +48,7 @@ enum DemoNodeValue
 }
 
 
-class DemoRenderer: SNItemRenderer
-{
-    let label = UILabel()
-    
-    override func didMoveToSuperview()
-    {
-        backgroundColor = UIColor.blueColor()
-        alpha = 0.75
-        
-        addSubview(label)
-        
-        label.textColor = UIColor.whiteColor()
-        
-        print( (node as? DemoNode)?.value )
-    }
-    
-    override var node: SNNode?
-        {
-        didSet
-        {
-            if let value = (node as? DemoNode)?.value
-            {
-                switch value
-                {
-                case DemoNodeValue.Number(let floatValue):
-                    label.text = "\(floatValue)"
-                    
-                default:
-                    label.text = "???"
-                }
-            }
-        }
-    }
-    
-    override func layoutSubviews()
-    {
-        label.frame = bounds
-    }
-    
-    override func intrinsicContentSize() -> CGSize
-    {
-        return CGSize(width: 100, height: 75)
-    }
-}
+
 
 
 

@@ -30,7 +30,7 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                 continue
             }
             
-            let sourceWidgetHeight = sourceItemRenderer.intrinsicContentSize().height + CGFloat(sourceNode.inputCount * SNInputRowHeight)
+            let sourceWidgetHeight = sourceItemRenderer.intrinsicContentSize().height + CGFloat(sourceNode.inputSlots * SNInputRowHeight)
             let sourceWidgetWidth = sourceItemRenderer.intrinsicContentSize().width
             
             let rect = CGRect(x: CGFloat(sourceNode.position.x),

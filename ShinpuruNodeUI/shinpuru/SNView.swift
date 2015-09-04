@@ -36,7 +36,7 @@ class SNView: UIScrollView
     
     func nodeMoved(view: SNView, node: SNNode)
     {
-        nodeDelegate?.nodeMoved(self, node: node)
+        nodeDelegate?.nodeMoved(view: self, node: node)
         renderRelationships()
     }
     
@@ -51,11 +51,11 @@ class SNView: UIScrollView
         {
             if widgetsDictionary[node] == nil
             {
-                let widget = SNNodeWidget(shinpuruNodeView: self, node: node)
+                let widget = SNNodeWidget(view: self, node: node)
                 
                 widgetsDictionary[node] = widget
                 
-                widget.itemRenderer = nodeDelegate?.itemRenderer(self)
+                // widget.itemRenderer = nodeDelegate?.itemRenderer(view: self, node: node)
                 
                 nodesView.addSubview(widget)
             }

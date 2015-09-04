@@ -22,21 +22,30 @@ class ViewController: UIViewController, SNDelegate
         
         let two = DemoNode(name: "Two", position: CGPoint(x: 20, y: 150), value: DemoNodeValue.Number(2))
         
-        let result = DemoNode(name: "Result", position: CGPoint(x: 170, y: 70), type: DemoNodeType.Addition, inputs: [one, two])
+        let three = DemoNode(name: "Three", position: CGPoint(x: 05, y: 250), value: DemoNodeValue.Number(3))
+        
+        let result = DemoNode(name: "Result", position: CGPoint(x: 170, y: 70), type: DemoNodeType.Addition, inputs: [one, two, three])
+        
+        result.inputSlots = 3
         
         shinpuruNodeUI.nodeDelegate = self 
         
-        shinpuruNodeUI.nodes = [one, two, result]
+        shinpuruNodeUI.nodes = [one, two, three, result]
     }
 
     // MARK: SNDelegate
     
-    func itemRenderer(view:SNView) -> SNItemRenderer
+    func itemRenderer(view view:SNView, node: SNNode) -> SNItemRenderer
     {
-        return DemoRenderer()
+        return DemoRenderer(node: node)
     }
     
-    func nodeMoved(view: SNView, node: SNNode)
+    func inputRowRenderer(view view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    {
+        return DemoInputRowRenderer(index: index, node: node)
+    }
+    
+    func nodeMoved(view view: SNView, node: SNNode)
     {
         // handle a node move - save to CoreData?
     }

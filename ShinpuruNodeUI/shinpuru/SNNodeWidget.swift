@@ -10,19 +10,21 @@ import UIKit
 
 class SNNodeWidget: UIView
 {
-    let shinpuruNodeView: SNView
+    let view: SNView
     let node: SNNode
     var previousPanPoint: CGPoint?
     
-    required init(shinpuruNodeView: SNView, node: SNNode)
+    required init(view: SNView, node: SNNode)
     {
-        self.shinpuruNodeView = shinpuruNodeView
+        self.view = view
         self.node = node
         
         super.init(frame: CGRect(origin: node.position, size: CGSizeZero))
         
         let pan = UIPanGestureRecognizer(target: self, action: "panHandler:")
         addGestureRecognizer(pan)
+        
+        setNeedsLayout()
     }
 
     required init?(coder aDecoder: NSCoder)
@@ -32,28 +34,40 @@ class SNNodeWidget: UIView
     
     var itemRenderer: SNItemRenderer?
     {
-        didSet
+        return view.nodeDelegate?.itemRenderer(view: view, node: node)
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        
+        guard let itemRenderer = itemRenderer else
         {
-            if let previousItemRenderer = oldValue
+            return
+        }
+        
+        addSubview(itemRenderer)
+        
+        itemRenderer.frame = CGRect(x: 0,
+            y: 0,
+            width: itemRenderer.intrinsicContentSize().width,
+            height: itemRenderer.intrinsicContentSize().height)
+        
+        frame = CGRect(x: frame.origin.x,
+            y: frame.origin.y,
+            width: itemRenderer.intrinsicContentSize().width,
+            height: itemRenderer.intrinsicContentSize().height + CGFloat(node.inputSlots * SNInputRowHeight))
+        
+        for i in 0 ..< node.inputSlots
+        {
+            if let inputRowRenderer = view.nodeDelegate?.inputRowRenderer(view: view, node: node, index: i)
             {
-                previousItemRenderer.removeFromSuperview()
-            }
-            
-            if let itemRenderer = itemRenderer
-            {
-                addSubview(itemRenderer)
+                addSubview(inputRowRenderer)
                 
-                itemRenderer.node = node
-                
-                itemRenderer.frame = CGRect(x: 0,
-                    y: 0,
-                    width: itemRenderer.intrinsicContentSize().width,
-                    height: itemRenderer.intrinsicContentSize().height)
-                
-                frame = CGRect(x: frame.origin.x,
-                    y: frame.origin.y,
-                    width: itemRenderer.intrinsicContentSize().width,
-                    height: itemRenderer.intrinsicContentSize().height + CGFloat(node.inputCount * SNInputRowHeight))
+                inputRowRenderer.frame = CGRect(x: 0,
+                    y: itemRenderer.intrinsicContentSize().height + (CGFloat(i) * inputRowRenderer.intrinsicContentSize().height),
+                    width: inputRowRenderer.intrinsicContentSize().width,
+                    height: inputRowRenderer.intrinsicContentSize().height)
             }
         }
     }
@@ -82,9 +96,7 @@ class SNNodeWidget: UIView
             
             node.position = newPosition
             
-            shinpuruNodeView.nodeMoved(shinpuruNodeView, node: node)
-            
-            print(node.name, node.uuid)
+            view.nodeMoved(view, node: node)
         }
     }
     
