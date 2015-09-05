@@ -50,9 +50,13 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                 // draw relationships...
                 for (idx, targetNode) in inputs.enumerate()
                 {
-                    guard let targetWidget = widgetsDictionary[targetNode],
-                        targetOutputRow = targetWidget.outputRenderer else
+                    guard let targetNode = targetNode,
+                        targetWidget = widgetsDictionary[targetNode],
+                        targetOutputRow = targetWidget.outputRenderer,
+                        sourceItemRendererHeight = sourceWidget.itemRenderer?.intrinsicContentSize().height else
                     {
+                        inputRowsHeight += sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
+                        
                         continue
                     }
                     
@@ -65,7 +69,7 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                         let inputPosition = CGPoint(x: targetNode.position.x + targetWidgetWidth,
                             y: targetNode.position.y + CGFloat(targetWidgetHeight) + (targetOutputRow.intrinsicContentSize().height / 2))
                         
-                        let targetY = sourceNode.position.y + targetWidgetHeight + inputRowsHeight + CGFloat(rowHeight / 2)
+                        let targetY = sourceNode.position.y + inputRowsHeight + CGFloat(rowHeight / 2) + sourceItemRendererHeight
                         
                         let targetPosition = CGPoint(x: sourceNode.position.x, y: targetY)
                         

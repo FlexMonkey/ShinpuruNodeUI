@@ -26,8 +26,7 @@ class SNView: UIScrollView
         }
     }
     
-    private var widgetsDictionary = [SNNode: SNNodeWidget]() // needs to be a tuple of widget and size metrics (e.g. item renderer, input count * row height)
-    
+    private var widgetsDictionary = [SNNode: SNNodeWidget]()
     private let curvesLayer = SNRelationshipCurvesLayer()
     private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
     

@@ -15,7 +15,7 @@ class SNNode: Equatable, Hashable
     let uuid  = NSUUID()
     
     var inputSlots: Int = 0
-    var inputs: [SNNode]?
+    var inputs: [SNNode?]?
     var position: CGPoint
     var name: String
     
@@ -45,6 +45,8 @@ protocol SNDelegate: NSObjectProtocol
     func inputRowRendererForView(view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
     
     func outputRowRendererForView(view:SNView, node: SNNode) -> SNOutputRowRenderer
+    
+    func nodeSelectedInView(view: SNView, node: SNNode?)
     
     func nodeMovedInView(view: SNView, node: SNNode)
 }

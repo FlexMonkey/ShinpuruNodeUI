@@ -97,13 +97,24 @@ class SNNodeWidget: UIView
             height: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight)
     }
     
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
+        super.touchesBegan(touches, withEvent: event)
+        
+        self.superview?.bringSubviewToFront(self)
+        
+        view.nodeDelegate?.nodeSelectedInView(view, node: node)
+    }
+    
     func panHandler(recognizer: UIPanGestureRecognizer)
     {
         if recognizer.state == UIGestureRecognizerState.Began
         {
+            previousPanPoint = recognizer.locationInView(self.superview)
+            
             self.superview?.bringSubviewToFront(self)
             
-            previousPanPoint = recognizer.locationInView(self.superview)
+            view.nodeDelegate?.nodeSelectedInView(view, node: node)
         }
         else if let previousPanPoint = previousPanPoint where recognizer.state == UIGestureRecognizerState.Changed
         {

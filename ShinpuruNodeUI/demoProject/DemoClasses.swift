@@ -10,7 +10,7 @@ import UIKit
 
 class DemoNode: SNNode
 {
-    var type: DemoNodeType?
+    var type: DemoNodeType = DemoNodeType.Numeric
     
     var value: DemoNodeValue?
     
@@ -26,7 +26,7 @@ class DemoNode: SNNode
         self.value = value
     }
     
-    init(name: String, position: CGPoint, type: DemoNodeType? = nil, inputs: [SNNode]? = nil)
+    init(name: String, position: CGPoint, type: DemoNodeType = DemoNodeType.Numeric, inputs: [SNNode?]? = nil)
     {
         super.init(name: name, position: position)
         
@@ -35,10 +35,16 @@ class DemoNode: SNNode
     }
 }
 
-enum DemoNodeType
+enum DemoNodeType: String
 {
-    case Addition
-    case Subtraction
+    case Numeric
+    
+    case Add
+    case Subtract
+    case Multiply
+    case Divide
+    
+    static let operators = [Add, Subtract, Multiply, Divide]
 }
 
 enum DemoNodeValue
