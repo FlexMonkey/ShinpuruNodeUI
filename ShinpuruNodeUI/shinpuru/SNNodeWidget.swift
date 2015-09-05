@@ -36,14 +36,28 @@ class SNNodeWidget: UIView
         fatalError("init(coder:) has not been implemented")
     }
     
+    private var _itemRenderer: SNItemRenderer?
+    
     var itemRenderer: SNItemRenderer?
     {
-        return view.nodeDelegate?.itemRendererForView(view, node: node)
+        if _itemRenderer == nil
+        {
+            _itemRenderer = view.nodeDelegate?.itemRendererForView(view, node: node)
+        }
+        
+        return _itemRenderer
     }
+    
+    private var _outputRenderer: SNOutputRowRenderer?
     
     var outputRenderer: SNOutputRowRenderer?
     {
-        return view.nodeDelegate?.outputRowRendererForView(view, node: node)
+        if _outputRenderer == nil
+        {
+            _outputRenderer = view.nodeDelegate?.outputRowRendererForView(view, node: node)
+        }
+        
+        return _outputRenderer
     }
     
     override func layoutSubviews()
@@ -79,6 +93,13 @@ class SNNodeWidget: UIView
                     height: inputRowRenderer.intrinsicContentSize().height)
                 
                 inputOutputRowsHeight += inputRowRenderer.intrinsicContentSize().height
+                
+                if let input = node.inputs?[i] where i < node.inputs?.count
+                {
+                    inputRowRenderer.node = input; print("setting input")
+                    
+                    inputRowRenderer.reload()
+                }
             }
         }
         
@@ -103,7 +124,7 @@ class SNNodeWidget: UIView
         
         self.superview?.bringSubviewToFront(self)
         
-        view.nodeDelegate?.nodeSelectedInView(view, node: node)
+        view.selectedNode = node
     }
     
     func panHandler(recognizer: UIPanGestureRecognizer)
@@ -114,7 +135,7 @@ class SNNodeWidget: UIView
             
             self.superview?.bringSubviewToFront(self)
             
-            view.nodeDelegate?.nodeSelectedInView(view, node: node)
+            view.selectedNode = node
         }
         else if let previousPanPoint = previousPanPoint where recognizer.state == UIGestureRecognizerState.Changed
         {

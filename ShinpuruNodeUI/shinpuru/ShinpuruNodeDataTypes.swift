@@ -68,6 +68,11 @@ class SNItemRenderer: UIView
     {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func reload()
+    {
+        fatalError("reload() has not been implemented")
+    }
 }
 
 /// Base class for output row renderer
@@ -102,6 +107,11 @@ class SNInputRowRenderer: SNOutputRowRenderer
         super.init(node: node)
     }
 
+    func reload()
+    {
+        fatalError("reload() has not been implemented")
+    }
+    
     required init?(coder aDecoder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")

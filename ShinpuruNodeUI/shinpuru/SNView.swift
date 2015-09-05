@@ -26,6 +26,14 @@ class SNView: UIScrollView
         }
     }
     
+    var selectedNode: SNNode?
+    {
+        didSet
+        {
+           nodeDelegate?.nodeSelectedInView(self, node: selectedNode)
+        }
+    }
+    
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
     private let curvesLayer = SNRelationshipCurvesLayer()
     private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
@@ -37,6 +45,28 @@ class SNView: UIScrollView
         layer.addSublayer(curvesLayer)
         
         addSubview(nodesView)
+    }
+    
+    func reloadNode(node: SNNode)
+    {
+        guard let nodes = nodes,
+            let itemRenderer = widgetsDictionary[node]?.itemRenderer else
+        {
+            return
+        }
+        
+        itemRenderer.reload()
+        
+        for otherNode in nodes where otherNode != node && otherNode.inputs != nil
+        {
+            for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)!
+            {
+                if otherNodeInputRenderer.node == node
+                {
+                    otherNodeInputRenderer.reload()
+                }
+            }
+        }
     }
     
     func nodeMoved(view: SNView, node: SNNode)

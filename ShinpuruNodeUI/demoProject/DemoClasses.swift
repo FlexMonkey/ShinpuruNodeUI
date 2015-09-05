@@ -33,6 +33,32 @@ class DemoNode: SNNode
         self.type = type
         self.inputs = inputs
     }
+    
+    func recalculate()
+    {
+        print("recalculate", name, type)
+        
+        guard let inputs = inputs where DemoNodeType.operators.indexOf(type) != nil else
+        {
+            return
+        }
+        
+        var val: Float = 0.0
+        
+        for inputNode in inputs
+        {
+            if let value = (inputNode as? DemoNode)?.value
+            {
+                switch value
+                {
+                case DemoNodeValue.Number(let floatValue):
+                    val += floatValue
+                }
+            }
+        }
+        
+        value = DemoNodeValue.Number(val)
+    }
 }
 
 enum DemoNodeType: String
@@ -50,7 +76,6 @@ enum DemoNodeType: String
 enum DemoNodeValue
 {
     case Number(Float)
-    case Image(UIImage)
 }
 
 

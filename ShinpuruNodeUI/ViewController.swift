@@ -20,8 +20,6 @@ class ViewController: UIViewController
     {
         super.viewDidLoad()
 
-        view.addSubview(shinpuruNodeUI)
-        
         buildUserInterface()
         
         let one = DemoNode(name: "One", position: CGPoint(x: 10, y: 10), value: DemoNodeValue.Number(1))
@@ -34,20 +32,31 @@ class ViewController: UIViewController
         
         let subtract = DemoNode(name: "Subtract", position: CGPoint(x: 420, y: 320), type: DemoNodeType.Subtract, inputs: [one, add, three])
         
+        let xxx = DemoNode(name: "xxx", position: CGPoint(x: 600, y: 200), type: DemoNodeType.Subtract, inputs: [subtract, add])
+        
         add.inputSlots = 3
         subtract.inputSlots = 3
+        xxx.inputSlots = 2
         
         shinpuruNodeUI.nodeDelegate = self 
         
-        shinpuruNodeUI.nodes = [one, two, three, add, subtract]
+        shinpuruNodeUI.nodes = [one, two, three, add, subtract, xxx]
     }
 
     func buildUserInterface()
     {
+        view.addSubview(shinpuruNodeUI)
+        view.backgroundColor = UIColor.darkGrayColor()
+        
+        // slider
         slider.minimumValue = -10
         slider.maximumValue = 10
         
         slider.enabled = false
+        
+        slider.addTarget(self, action: "sliderChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        
+        // operators segmented control
         operatorsControl.enabled = false
         
         controlsStackView.distribution = UIStackViewDistribution.FillEqually
@@ -55,8 +64,38 @@ class ViewController: UIViewController
         controlsStackView.addArrangedSubview(slider)
         controlsStackView.addArrangedSubview(UIView(frame: CGRectZero))
         controlsStackView.addArrangedSubview(operatorsControl)
-        
+
         view.addSubview(controlsStackView)
+    }
+    
+    // MARK: UI control change handlers
+    
+    func sliderChangeHandler()
+    {
+        if let selectedNode = shinpuruNodeUI.selectedNode as? DemoNode where selectedNode.type == .Numeric
+        {
+            selectedNode.value = DemoNodeValue.Number(slider.value)
+            shinpuruNodeUI.reloadNode(selectedNode)
+            
+            updateDecendentNodes(selectedNode)
+        }
+    }
+    
+    // MARK: Nodes stuff
+    
+    func updateDecendentNodes(sourceNode: DemoNode)
+    {
+        for targetNode in shinpuruNodeUI.nodes! where targetNode != sourceNode
+        {
+            if let inputs = targetNode.inputs,
+                targetNode = targetNode as? DemoNode where inputs.indexOf({$0 == sourceNode}) != nil
+            {
+                targetNode.recalculate()
+                shinpuruNodeUI.reloadNode(targetNode)
+                
+                updateDecendentNodes(targetNode)
+            }
+        }
     }
     
     // MARK: System layout
@@ -65,13 +104,13 @@ class ViewController: UIViewController
     {
         super.viewDidLayoutSubviews()
         
+        let controlsStackViewHeight = max(slider.intrinsicContentSize().height, operatorsControl.intrinsicContentSize().height)
+        
         shinpuruNodeUI.frame = CGRect(x: 0,
             y: topLayoutGuide.length,
             width: view.frame.width,
-            height: view.frame.height - topLayoutGuide.length)
-        
-        let controlsStackViewHeight = max(slider.intrinsicContentSize().height, operatorsControl.intrinsicContentSize().height)
-        
+            height: view.frame.height - topLayoutGuide.length - controlsStackViewHeight - 20)
+
         controlsStackView.frame = CGRect(x: 10,
             y: view.frame.height - controlsStackViewHeight - 10,
             width: view.frame.width - 20,
@@ -108,6 +147,19 @@ extension ViewController: SNDelegate
         case .Numeric:
             slider.enabled = true
             operatorsControl.enabled = false
+            
+            if let nodeValue = node.value
+            {
+                switch nodeValue
+                {
+                case DemoNodeValue.Number(let value):
+                    slider.value = value
+                    
+                default:
+                    slider.value = 0
+                    slider.enabled = false
+                }
+            }
             
         case .Add, .Subtract, .Multiply, .Divide:
             slider.enabled = false

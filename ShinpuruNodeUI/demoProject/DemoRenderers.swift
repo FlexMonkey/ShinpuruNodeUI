@@ -19,11 +19,36 @@ class DemoInputRowRenderer: SNInputRowRenderer
 
         addSubview(label)
         layer.addSublayer(line)
-        
-        label.text = "\(index) Input"
-        
+  
         line.strokeColor = UIColor.whiteColor().CGColor
         line.lineWidth = 2
+    }
+    
+    override var node: SNNode
+    {
+        didSet
+        {
+            updateLabel()
+        }
+    }
+    
+    override func reload()
+    {
+        updateLabel()
+    }
+    
+    func updateLabel()
+    {
+        if let value = (node as? DemoNode)?.value
+        {
+            switch value
+            {
+            case DemoNodeValue.Number(let floatValue):
+                label.text = "\(floatValue)"
+            default:
+                label.text = "???"
+            }
+        }
     }
     
     override func intrinsicContentSize() -> CGSize
@@ -104,6 +129,11 @@ class DemoRenderer: SNItemRenderer
         }
     }
     
+    override func reload()
+    {
+        updateLabel()
+    }
+    
     func updateLabel()
     {
         if let value = (node as? DemoNode)?.value
@@ -112,7 +142,6 @@ class DemoRenderer: SNItemRenderer
             {
             case DemoNodeValue.Number(let floatValue):
                 label.text = "\(floatValue)"
-                
             default:
                 label.text = "???"
             }
