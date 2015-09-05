@@ -35,17 +35,22 @@ class ViewController: UIViewController, SNDelegate
 
     // MARK: SNDelegate
     
-    func itemRenderer(view view:SNView, node: SNNode) -> SNItemRenderer
+    func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
     {
         return DemoRenderer(node: node)
     }
     
-    func inputRowRenderer(view view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(view: SNView, node: SNNode, index: Int) -> SNInputRowRenderer
     {
         return DemoInputRowRenderer(index: index, node: node)
     }
     
-    func nodeMoved(view view: SNView, node: SNNode)
+    func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
+    {
+        return DemoOutputRowRenderer(node: node)
+    }
+    
+    func nodeMovedInView(view: SNView, node: SNNode)
     {
         // handle a node move - save to CoreData?
     }

@@ -40,11 +40,13 @@ func == (lhs: SNNode, rhs: SNNode) -> Bool
 
 protocol SNDelegate: NSObjectProtocol
 {
-    func itemRenderer(view view:SNView, node: SNNode) -> SNItemRenderer
+    func itemRendererForView(view:SNView, node: SNNode) -> SNItemRenderer
     
-    func inputRowRenderer(view view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
     
-    func nodeMoved(view view: SNView, node: SNNode)
+    func outputRowRendererForView(view:SNView, node: SNNode) -> SNOutputRowRenderer
+    
+    func nodeMovedInView(view: SNView, node: SNNode)
 }
 
 /// Base class for node item renderer
@@ -66,26 +68,47 @@ class SNItemRenderer: UIView
     }
 }
 
+/// Base class for output row renderer
+
+class SNOutputRowRenderer: UIView
+{
+    var node: SNNode
+    
+    required init(node: SNNode)
+    {
+        self.node = node
+        
+        super.init(frame: CGRectZero)
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// Base class for input row renderer
 
-class SNInputRowRenderer: UIView
+class SNInputRowRenderer: SNOutputRowRenderer
 {
     var index: Int
-    var node: SNNode
     
     required init(index: Int, node: SNNode)
     {
         self.index = index
-        self.node = node
         
-        super.init(frame: CGRectZero)
+        super.init(node: node)
     }
 
     required init?(coder aDecoder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    required init(node: SNNode)
+    {
+        fatalError("init(node:) has not been implemented")
+    }
 }
 
 

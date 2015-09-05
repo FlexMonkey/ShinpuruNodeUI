@@ -33,11 +33,16 @@ class SNRelationshipCurvesLayer: CAShapeLayer
             let rect = CGRect(x: CGFloat(sourceNode.position.x),
                 y: CGFloat(sourceNode.position.y),
                 width: sourceWidget.intrinsicContentSize().width,
-                height: sourceWidget.intrinsicContentSize().height).insetBy(dx: -(lineWidth / 2), dy: -(lineWidth / 2))
+                height: sourceWidget.intrinsicContentSize().height).insetBy(dx: lineWidth, dy: lineWidth)
+            
+            if rect.isEmpty
+            {
+                continue
+            }
             
             let rectPath = UIBezierPath(roundedRect: rect, cornerRadius: 0)
             relationshipCurvesPath.appendPath(rectPath)
-            print("----")
+        
             if let inputs = sourceNode.inputs
             {
                 var inputRowsHeight: CGFloat = 0
@@ -45,19 +50,20 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                 // draw relationships...
                 for (idx, targetNode) in inputs.enumerate()
                 {
-                    guard let targetWidget = widgetsDictionary[targetNode] else
+                    guard let targetWidget = widgetsDictionary[targetNode],
+                        targetOutputRow = targetWidget.outputRenderer else
                     {
                         continue
                     }
                     
                     if idx < sourceWidget.inputRowRenderers.count
                     {
-                        let targetWidgetHeight = targetWidget.intrinsicContentSize().height
+                        let targetWidgetHeight = targetWidget.intrinsicContentSize().height - targetOutputRow.intrinsicContentSize().height
                         let targetWidgetWidth = targetWidget.intrinsicContentSize().width
                         let rowHeight = sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
                             
                         let inputPosition = CGPoint(x: targetNode.position.x + targetWidgetWidth,
-                            y: CGFloat(targetWidgetHeight / 2) - CGFloat(targetWidgetHeight) +  targetNode.position.y + CGFloat(targetWidgetHeight))
+                            y: targetNode.position.y + CGFloat(targetWidgetHeight) + (targetOutputRow.intrinsicContentSize().height / 2))
                         
                         let targetY = sourceNode.position.y + targetWidgetHeight + inputRowsHeight + CGFloat(rowHeight / 2)
                         

@@ -11,26 +11,70 @@ import UIKit
 class DemoInputRowRenderer: SNInputRowRenderer
 {
     let label = UILabel()
+    let line = CAShapeLayer()
     
     override func didMoveToSuperview()
     {
         backgroundColor = UIColor.lightGrayColor()
-        layer.borderColor = UIColor.blackColor().CGColor
-        layer.borderWidth = 1
-        
+
         addSubview(label)
+        layer.addSublayer(line)
         
-        label.text = "\(index) Input Row!"
+        label.text = "\(index) Input"
+        
+        line.strokeColor = UIColor.whiteColor().CGColor
+        line.lineWidth = 2
     }
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: 100, height: 20 * (index + 1))
+        return CGSize(width: 100, height: 25 + (index * 25))
     }
     
     override func layoutSubviews()
     {
-        label.frame = bounds
+        label.frame = bounds.insetBy(dx: 2, dy: 0)
+        
+        let linePath = UIBezierPath()
+        linePath.moveToPoint(CGPoint(x: 0, y: bounds.height))
+        linePath.addLineToPoint(CGPoint(x: bounds.width, y: bounds.height))
+        
+        if index == 0
+        {
+            linePath.moveToPoint(CGPoint(x: 0, y: 0))
+            linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+        }
+        
+        line.path = linePath.CGPath
+    }
+}
+
+// ----
+
+class DemoOutputRowRenderer: SNOutputRowRenderer
+{
+    let label = UILabel()
+    
+    override func didMoveToSuperview()
+    {
+        backgroundColor = UIColor.darkGrayColor()
+      
+        addSubview(label)
+        
+        label.textColor = UIColor.whiteColor()
+        label.textAlignment = NSTextAlignment.Right
+        
+        label.text = "Output"
+    }
+    
+    override func intrinsicContentSize() -> CGSize
+    {
+        return CGSize(width: 100, height: 25)
+    }
+    
+    override func layoutSubviews()
+    {
+        label.frame = bounds.insetBy(dx: 2, dy: 0)
     }
 }
 

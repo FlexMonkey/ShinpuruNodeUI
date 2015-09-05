@@ -26,6 +26,9 @@ class SNNodeWidget: UIView
         addGestureRecognizer(pan)
         
         setNeedsLayout()
+        
+        layer.borderColor = UIColor.whiteColor().CGColor
+        layer.borderWidth = 2
     }
 
     required init?(coder aDecoder: NSCoder)
@@ -35,48 +38,63 @@ class SNNodeWidget: UIView
     
     var itemRenderer: SNItemRenderer?
     {
-        return view.nodeDelegate?.itemRenderer(view: view, node: node)
+        return view.nodeDelegate?.itemRendererForView(view, node: node)
+    }
+    
+    var outputRenderer: SNOutputRowRenderer?
+    {
+        return view.nodeDelegate?.outputRowRendererForView(view, node: node)
     }
     
     override func layoutSubviews()
     {
         super.layoutSubviews()
         
-        guard let itemRenderer = itemRenderer else
+        guard let itemRenderer = itemRenderer,
+            outputRenderer = outputRenderer else
         {
             return
         }
         
         addSubview(itemRenderer)
         
-        itemRenderer.frame = CGRect(x: 0,
+        itemRenderer.frame = CGRect(x: 1,
             y: 0,
             width: itemRenderer.intrinsicContentSize().width,
             height: itemRenderer.intrinsicContentSize().height)
         
         inputRowRenderers.removeAll()
-        var inputRowsHeight: CGFloat = 0
+        var inputOutputRowsHeight: CGFloat = 0
         
         for i in 0 ..< node.inputSlots
         {
-            if let inputRowRenderer = view.nodeDelegate?.inputRowRenderer(view: view, node: node, index: i)
+            if let inputRowRenderer = view.nodeDelegate?.inputRowRendererForView(view, node: node, index: i)
             {
                 addSubview(inputRowRenderer)
                 inputRowRenderers.append(inputRowRenderer)
                 
-                inputRowRenderer.frame = CGRect(x: 0,
-                    y: itemRenderer.intrinsicContentSize().height + inputRowsHeight,
+                inputRowRenderer.frame = CGRect(x: 1,
+                    y: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight,
                     width: inputRowRenderer.intrinsicContentSize().width,
                     height: inputRowRenderer.intrinsicContentSize().height)
                 
-                inputRowsHeight += inputRowRenderer.intrinsicContentSize().height
+                inputOutputRowsHeight += inputRowRenderer.intrinsicContentSize().height
             }
         }
         
+        addSubview(outputRenderer)
+        
+        outputRenderer.frame = CGRect(x: 1,
+            y: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight,
+            width: outputRenderer.intrinsicContentSize().width,
+            height: outputRenderer.intrinsicContentSize().height)
+        
+        inputOutputRowsHeight += outputRenderer.intrinsicContentSize().height
+        
         frame = CGRect(x: frame.origin.x,
             y: frame.origin.y,
-            width: itemRenderer.intrinsicContentSize().width,
-            height: itemRenderer.intrinsicContentSize().height + inputRowsHeight)
+            width: itemRenderer.intrinsicContentSize().width + 2,
+            height: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight)
     }
     
     func panHandler(recognizer: UIPanGestureRecognizer)
@@ -114,6 +132,6 @@ class SNNodeWidget: UIView
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.darkGrayColor()
+       
     }
 }

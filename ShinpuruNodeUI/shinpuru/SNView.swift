@@ -42,7 +42,7 @@ class SNView: UIScrollView
     
     func nodeMoved(view: SNView, node: SNNode)
     {
-        nodeDelegate?.nodeMoved(view: self, node: node)
+        nodeDelegate?.nodeMovedInView(self, node: node)
         renderRelationships()
     }
     
