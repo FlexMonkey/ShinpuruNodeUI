@@ -6,6 +6,16 @@
 //  Copyright © 2015 Simon Gladman. All rights reserved.
 //
 
+/*
+    To do
+        
+    * Add nodes
+    * delete nodes
+    * build relationships
+    * remove relatinships
+
+*/
+
 import UIKit
 
 class ViewController: UIViewController
@@ -75,7 +85,7 @@ class ViewController: UIViewController
     
     func operatorsControlChangeHandler()
     {
-        if let selectedNode = shinpuruNodeUI.selectedNode as? DemoNode where selectedNode.type.isOperator
+        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type.isOperator
         {
             selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
             shinpuruNodeUI.reloadNode(selectedNode)
@@ -86,7 +96,7 @@ class ViewController: UIViewController
     
     func sliderChangeHandler()
     {
-        if let selectedNode = shinpuruNodeUI.selectedNode as? DemoNode where selectedNode.type == .Numeric
+        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type == .Numeric
         {
             selectedNode.value = DemoNodeValue.Number(round(slider.value))
             shinpuruNodeUI.reloadNode(selectedNode)
@@ -102,7 +112,7 @@ class ViewController: UIViewController
         for targetNode in shinpuruNodeUI.nodes! where targetNode != sourceNode
         {
             if let inputs = targetNode.inputs,
-                targetNode = targetNode as? DemoNode where inputs.indexOf({$0 == sourceNode}) != nil
+                targetNode = targetNode.demoNode where inputs.indexOf({$0 == sourceNode}) != nil
             {
                 targetNode.recalculate()
                 shinpuruNodeUI.reloadNode(targetNode)
@@ -151,7 +161,7 @@ extension ViewController: SNDelegate
     
     func nodeSelectedInView(view: SNView, node: SNNode?)
     {
-        guard let node = node as? DemoNode else
+        guard let node = node?.demoNode else
         {
             return
         }

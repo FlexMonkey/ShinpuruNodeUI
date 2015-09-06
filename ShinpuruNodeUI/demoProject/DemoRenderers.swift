@@ -39,7 +39,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     func updateLabel()
     {
-        if let value = (node as? DemoNode)?.value
+        if let value = node.demoNode?.value
         {
             switch value
             {
@@ -136,7 +136,7 @@ class DemoRenderer: SNItemRenderer
     
     func updateLabel()
     {
-        if let value = (node as? DemoNode)?.value, type = (node as? DemoNode)?.type
+        if let value = node.demoNode?.value, type = node.demoNode?.type
         {
             switch value
             {

@@ -84,11 +84,11 @@ class DemoNode: SNNode
     
     func getInputValueAt(index: Int) -> DemoNodeValue
     {
-        if inputs == nil || index >= inputs?.count || inputs?[index] == nil || inputs?[index] as? DemoNode == nil
+        if inputs == nil || index >= inputs?.count || inputs?[index] == nil || inputs?[index]?.demoNode == nil
         {
             return DemoNodeValue.Number(0)
         }
-        else if let value = (inputs?[index] as! DemoNode).value
+        else if let value = inputs?[index]?.demoNode?.value
         {
             return value
         }
@@ -96,6 +96,14 @@ class DemoNode: SNNode
         {
             return DemoNodeValue.Number(0)
         }
+    }
+}
+
+extension SNNode
+{
+    var demoNode: DemoNode?
+    {
+        return self as? DemoNode
     }
 }
 
