@@ -64,8 +64,8 @@ class DemoInputRowRenderer: SNInputRowRenderer
         
         if index == 0
         {
-            linePath.moveToPoint(CGPoint(x: 0, y: 0))
-            linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+            linePath.moveToPoint(CGPoint(x: 0, y: 1))
+            linePath.addLineToPoint(CGPoint(x: bounds.width, y: 1))
         }
         
         line.path = linePath.CGPath
@@ -77,15 +77,20 @@ class DemoInputRowRenderer: SNInputRowRenderer
 class DemoOutputRowRenderer: SNOutputRowRenderer
 {
     let label = UILabel()
+    let line = CAShapeLayer()
     
     override func didMoveToSuperview()
     {
         backgroundColor = UIColor.darkGrayColor()
       
         addSubview(label)
+        layer.addSublayer(line)
         
         label.textColor = UIColor.whiteColor()
         label.textAlignment = NSTextAlignment.Right
+        
+        line.strokeColor = UIColor.whiteColor().CGColor
+        line.lineWidth = 1
         
         label.text = "Output"
     }
@@ -98,6 +103,12 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
     override func layoutSubviews()
     {
         label.frame = bounds.insetBy(dx: 2, dy: 0)
+        
+        let linePath = UIBezierPath()
+        linePath.moveToPoint(CGPoint(x: 0, y: 0))
+        linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+  
+        line.path = linePath.CGPath
     }
 }
 
@@ -109,9 +120,6 @@ class DemoRenderer: SNItemRenderer
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.blueColor()
-        alpha = 0.75
-        
         addSubview(label)
         
         label.textColor = UIColor.whiteColor()
@@ -138,6 +146,8 @@ class DemoRenderer: SNItemRenderer
     {
         if let value = node.demoNode?.value, type = node.demoNode?.type
         {
+            backgroundColor = type.isOperator ? UIColor.blueColor() : UIColor.redColor()
+            
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
