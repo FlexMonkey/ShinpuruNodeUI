@@ -40,11 +40,13 @@ func == (lhs: SNNode, rhs: SNNode) -> Bool
 
 protocol SNDelegate: NSObjectProtocol
 {
-    func itemRendererForView(view:SNView, node: SNNode) -> SNItemRenderer
+    func dataProviderForView(view: SNView) -> [SNNode]?
     
-    func inputRowRendererForView(view:SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
     
-    func outputRowRendererForView(view:SNView, node: SNNode) -> SNOutputRowRenderer
+    func inputRowRendererForView(view: SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    
+    func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
     
     func nodeSelectedInView(view: SNView, node: SNNode?)
     

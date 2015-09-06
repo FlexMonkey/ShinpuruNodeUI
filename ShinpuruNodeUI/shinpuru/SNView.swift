@@ -10,12 +10,13 @@ import UIKit
 
 class SNView: UIScrollView
 {
+    private var widgetsDictionary = [SNNode: SNNodeWidget]()
+    private let curvesLayer = SNRelationshipCurvesLayer()
+    private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
+    
     var nodes: [SNNode]?
     {
-        didSet
-        {
-            renderNodes()
-        }
+        return nodeDelegate?.dataProviderForView(self)
     }
     
     weak var nodeDelegate: SNDelegate?
@@ -27,7 +28,7 @@ class SNView: UIScrollView
     }
     
     var selectedNode: SNNode?
-        {
+    {
         didSet
         {
             if let previousNode = oldValue
@@ -49,10 +50,6 @@ class SNView: UIScrollView
         }
     }
     
-    private var widgetsDictionary = [SNNode: SNNodeWidget]()
-    private let curvesLayer = SNRelationshipCurvesLayer()
-    private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
-    
     override func didMoveToSuperview()
     {
         backgroundColor = UIColor.blackColor()
@@ -60,6 +57,8 @@ class SNView: UIScrollView
         layer.addSublayer(curvesLayer)
         
         addSubview(nodesView)
+        
+        renderNodes()
     }
     
     func reloadNode(node: SNNode)
