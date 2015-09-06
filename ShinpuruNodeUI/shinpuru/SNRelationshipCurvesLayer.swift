@@ -79,8 +79,8 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                         
                         let controlPointTwo = CGPoint(x: inputPosition.x + controlPointHorizontalOffset, y: inputPosition.y)
                         
-                        drawSemiCircle(relationshipCurvesPath, position: inputPosition, clockwise: false)
-                        drawSemiCircle(relationshipCurvesPath, position: targetPosition, clockwise: true)
+                        drawTerminal(relationshipCurvesPath, position: inputPosition)
+                        drawTerminal(relationshipCurvesPath, position: targetPosition)
                         
                         relationshipCurvesPath.moveToPoint(targetPosition)
                         relationshipCurvesPath.addCurveToPoint(inputPosition, controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
@@ -95,17 +95,11 @@ class SNRelationshipCurvesLayer: CAShapeLayer
     }
     
     
-    func drawSemiCircle(relationshipCurvesPath: UIBezierPath, position: CGPoint, clockwise: Bool)
+    func drawTerminal(relationshipCurvesPath: UIBezierPath, position: CGPoint)
     {
-        let quarterCircle = CGFloat(M_PI) / 2
-        let halfCircle = CGFloat(M_PI)
+        let rect = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: position.x - 2, y: position.y - 2), size: CGSize(width: 4, height: 4)), cornerRadius: 0)
         
-        relationshipCurvesPath.moveToPoint(position)
-        
-        for i in 1...2
-        {
-            relationshipCurvesPath.addArcWithCenter(position, radius: CGFloat(i * 2), startAngle: quarterCircle, endAngle: halfCircle + quarterCircle, clockwise: clockwise)
-        }
+        relationshipCurvesPath.appendPath(rect)
     }
     
 }
