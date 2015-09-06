@@ -28,7 +28,7 @@ class ViewController: UIViewController
         
         let three = DemoNode(name: "Three", position: CGPoint(x: 35, y: 320), value: DemoNodeValue.Number(3))
   
-        let add = DemoNode(name: "Add", position: CGPoint(x: 270, y: 70), type: DemoNodeType.Add, inputs: [one, two, three])
+        let add = DemoNode(name: "Add", position: CGPoint(x: 270, y: 70), type: DemoNodeType.Add, inputs: [one, nil, two, three])
         
         let subtract = DemoNode(name: "Subtract", position: CGPoint(x: 420, y: 320), type: DemoNodeType.Subtract, inputs: [add, three])
         
@@ -51,14 +51,14 @@ class ViewController: UIViewController
         // slider
         slider.minimumValue = -10
         slider.maximumValue = 10
-
+        slider.tintColor = UIColor.whiteColor()
         slider.enabled = false
         
         slider.addTarget(self, action: "sliderChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
         
         // operators segmented control
         operatorsControl.enabled = false
-        
+        operatorsControl.tintColor = UIColor.whiteColor()
         operatorsControl.addTarget(self, action: "operatorsControlChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
         
         // toolbar stak view
@@ -161,6 +161,7 @@ extension ViewController: SNDelegate
         case .Numeric:
             slider.enabled = true
             operatorsControl.enabled = false
+            operatorsControl.selectedSegmentIndex = -1
             
             if let nodeValue = node.value
             {

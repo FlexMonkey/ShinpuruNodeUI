@@ -27,10 +27,25 @@ class SNView: UIScrollView
     }
     
     var selectedNode: SNNode?
-    {
+        {
         didSet
         {
-           nodeDelegate?.nodeSelectedInView(self, node: selectedNode)
+            if let previousNode = oldValue
+            {
+                widgetsDictionary[previousNode]?.layer.shadowColor = nil
+                widgetsDictionary[previousNode]?.layer.shadowRadius = 0
+                widgetsDictionary[previousNode]?.layer.shadowOpacity = 0
+            }
+            
+            nodeDelegate?.nodeSelectedInView(self, node: selectedNode)
+            
+            if let selectedNode = selectedNode
+            {
+                widgetsDictionary[selectedNode]?.layer.shadowColor = UIColor.yellowColor().CGColor
+                widgetsDictionary[selectedNode]?.layer.shadowRadius = 10
+                widgetsDictionary[selectedNode]?.layer.shadowOpacity = 1
+                widgetsDictionary[selectedNode]?.layer.shadowOffset = CGSize(width: 0, height: 0)
+            }
         }
     }
     

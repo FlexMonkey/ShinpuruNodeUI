@@ -59,7 +59,7 @@ class DemoNode: SNNode
         switch type
         {
         case .Add:
-            floatValue = getInputValueAt(0).floatValue + getInputValueAt(1).floatValue + getInputValueAt(2).floatValue
+            floatValue = getInputValueAt(0).floatValue + getInputValueAt(1).floatValue + getInputValueAt(2).floatValue + getInputValueAt(3).floatValue
             
         case .Subtract:
             floatValue = getInputValueAt(0).floatValue - getInputValueAt(1).floatValue
@@ -117,7 +117,7 @@ enum DemoNodeType: String
         case .Numeric:
             return 0
         case .Add:
-            return 3
+            return 4
         case .Subtract, .Multiply, .Divide:
             return 2
         }
