@@ -30,17 +30,17 @@ class ViewController: UIViewController
   
         let add = DemoNode(name: "Add", position: CGPoint(x: 270, y: 70), type: DemoNodeType.Add, inputs: [one, two, three])
         
-        let subtract = DemoNode(name: "Subtract", position: CGPoint(x: 420, y: 320), type: DemoNodeType.Subtract, inputs: [one, add, three])
+        let subtract = DemoNode(name: "Subtract", position: CGPoint(x: 420, y: 320), type: DemoNodeType.Subtract, inputs: [add, three])
         
-        let xxx = DemoNode(name: "xxx", position: CGPoint(x: 600, y: 200), type: DemoNodeType.Subtract, inputs: [subtract, add])
-        
-        add.inputSlots = 3
-        subtract.inputSlots = 3
-        xxx.inputSlots = 2
+        let multiply = DemoNode(name: "Multiply", position: CGPoint(x: 600, y: 200), type: DemoNodeType.Multiply, inputs: [subtract, add])
         
         shinpuruNodeUI.nodeDelegate = self 
         
-        shinpuruNodeUI.nodes = [one, two, three, add, subtract, xxx]
+        shinpuruNodeUI.nodes = [one, two, three, add, subtract, multiply]
+        
+        updateDescendantNodes(one)
+        updateDescendantNodes(two)
+        updateDescendantNodes(three)
     }
 
     func buildUserInterface()
@@ -51,7 +51,7 @@ class ViewController: UIViewController
         // slider
         slider.minimumValue = -10
         slider.maximumValue = 10
-        
+
         slider.enabled = false
         
         slider.addTarget(self, action: "sliderChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
@@ -59,6 +59,9 @@ class ViewController: UIViewController
         // operators segmented control
         operatorsControl.enabled = false
         
+        operatorsControl.addTarget(self, action: "operatorsControlChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        
+        // toolbar stak view
         controlsStackView.distribution = UIStackViewDistribution.FillEqually
         
         controlsStackView.addArrangedSubview(slider)
@@ -70,20 +73,31 @@ class ViewController: UIViewController
     
     // MARK: UI control change handlers
     
+    func operatorsControlChangeHandler()
+    {
+        if let selectedNode = shinpuruNodeUI.selectedNode as? DemoNode where selectedNode.type.isOperator
+        {
+            selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
+            shinpuruNodeUI.reloadNode(selectedNode)
+            
+            updateDescendantNodes(selectedNode)
+        }
+    }
+    
     func sliderChangeHandler()
     {
         if let selectedNode = shinpuruNodeUI.selectedNode as? DemoNode where selectedNode.type == .Numeric
         {
-            selectedNode.value = DemoNodeValue.Number(slider.value)
+            selectedNode.value = DemoNodeValue.Number(round(slider.value))
             shinpuruNodeUI.reloadNode(selectedNode)
             
-            updateDecendentNodes(selectedNode)
+            updateDescendantNodes(selectedNode)
         }
     }
     
     // MARK: Nodes stuff
     
-    func updateDecendentNodes(sourceNode: DemoNode)
+    func updateDescendantNodes(sourceNode: DemoNode)
     {
         for targetNode in shinpuruNodeUI.nodes! where targetNode != sourceNode
         {
@@ -93,7 +107,7 @@ class ViewController: UIViewController
                 targetNode.recalculate()
                 shinpuruNodeUI.reloadNode(targetNode)
                 
-                updateDecendentNodes(targetNode)
+                updateDescendantNodes(targetNode)
             }
         }
     }
@@ -154,10 +168,6 @@ extension ViewController: SNDelegate
                 {
                 case DemoNodeValue.Number(let value):
                     slider.value = value
-                    
-                default:
-                    slider.value = 0
-                    slider.enabled = false
                 }
             }
             

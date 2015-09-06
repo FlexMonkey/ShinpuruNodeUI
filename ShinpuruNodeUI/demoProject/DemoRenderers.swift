@@ -45,8 +45,6 @@ class DemoInputRowRenderer: SNInputRowRenderer
             {
             case DemoNodeValue.Number(let floatValue):
                 label.text = "\(floatValue)"
-            default:
-                label.text = "???"
             }
         }
     }
@@ -117,6 +115,8 @@ class DemoRenderer: SNItemRenderer
         addSubview(label)
         
         label.textColor = UIColor.whiteColor()
+        label.numberOfLines = 2
+        label.textAlignment = NSTextAlignment.Center
         
         updateLabel()
     }
@@ -136,14 +136,12 @@ class DemoRenderer: SNItemRenderer
     
     func updateLabel()
     {
-        if let value = (node as? DemoNode)?.value
+        if let value = (node as? DemoNode)?.value, type = (node as? DemoNode)?.type
         {
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
-                label.text = "\(floatValue)"
-            default:
-                label.text = "???"
+                label.text = "\(type) \n\(floatValue)"
             }
         }
     }

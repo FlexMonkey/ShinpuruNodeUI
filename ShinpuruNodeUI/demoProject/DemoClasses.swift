@@ -11,6 +11,12 @@ import UIKit
 class DemoNode: SNNode
 {
     var type: DemoNodeType = DemoNodeType.Numeric
+    {
+        didSet
+        {
+            recalculate()
+        }
+    }
     
     var value: DemoNodeValue?
     
@@ -32,32 +38,50 @@ class DemoNode: SNNode
         
         self.type = type
         self.inputs = inputs
+        
+        self.inputSlots = type.inputSlots
     }
     
     func recalculate()
     {
-        print("recalculate", name, type)
+        let floatValue: Float
         
-        guard let inputs = inputs where DemoNodeType.operators.indexOf(type) != nil else
+        switch type
         {
-            return
+        case .Add:
+            floatValue = getInputValueAt(0).floatValue + getInputValueAt(1).floatValue + getInputValueAt(2).floatValue
+            
+        case .Subtract:
+            floatValue = getInputValueAt(0).floatValue - getInputValueAt(1).floatValue
+            
+        case .Multiply:
+            floatValue = getInputValueAt(0).floatValue * getInputValueAt(1).floatValue
+            
+        case .Divide:
+            floatValue = getInputValueAt(0).floatValue / getInputValueAt(1).floatValue
+            
+        case .Numeric:
+            floatValue = value?.floatValue ?? Float(0)
         }
         
-        var val: Float = 0.0
         
-        for inputNode in inputs
+        value = DemoNodeValue.Number(floatValue)
+    }
+    
+    func getInputValueAt(index: Int) -> DemoNodeValue
+    {
+        if inputs == nil || index >= inputs?.count || inputs?[index] == nil || inputs?[index] as? DemoNode == nil
         {
-            if let value = (inputNode as? DemoNode)?.value
-            {
-                switch value
-                {
-                case DemoNodeValue.Number(let floatValue):
-                    val += floatValue
-                }
-            }
+            return DemoNodeValue.Number(0)
         }
-        
-        value = DemoNodeValue.Number(val)
+        else if let value = (inputs?[index] as! DemoNode).value
+        {
+            return value
+        }
+        else
+        {
+            return DemoNodeValue.Number(0)
+        }
     }
 }
 
@@ -71,11 +95,38 @@ enum DemoNodeType: String
     case Divide
     
     static let operators = [Add, Subtract, Multiply, Divide]
+    
+    var inputSlots: Int
+    {
+        switch self
+        {
+        case .Numeric:
+            return 0
+        case .Add:
+            return 3
+        case .Subtract, .Multiply, .Divide:
+            return 2
+        }
+    }
+    
+    var isOperator: Bool
+    {
+        return DemoNodeType.operators.indexOf(self) != nil
+    }
 }
 
 enum DemoNodeValue
 {
     case Number(Float)
+
+    var floatValue: Float
+    {
+        switch self
+        {
+        case .Number(let value):
+            return value
+        }
+    }
 }
 
 
