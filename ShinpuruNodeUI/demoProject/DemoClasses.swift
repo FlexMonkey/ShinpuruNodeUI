@@ -38,8 +38,18 @@ class DemoNode: SNNode
         
         self.type = type
         self.inputs = inputs
-        
-        self.inputSlots = type.inputSlots
+    }
+    
+    override var inputSlots: Int
+    {
+        set
+        {
+            // ignore - we compute this from the type
+        }
+        get
+        {
+            return type.inputSlots
+        }
     }
     
     func recalculate()
@@ -64,6 +74,10 @@ class DemoNode: SNNode
             floatValue = value?.floatValue ?? Float(0)
         }
         
+        if let inputs = inputs where inputs.count >= type.inputSlots
+        {
+            self.inputs = Array(inputs[0 ... type.inputSlots - 1])
+        }
         
         value = DemoNodeValue.Number(floatValue)
     }

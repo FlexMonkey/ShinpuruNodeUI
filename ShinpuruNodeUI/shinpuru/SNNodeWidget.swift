@@ -60,15 +60,25 @@ class SNNodeWidget: UIView
         return _outputRenderer
     }
     
-    override func layoutSubviews()
+    func buildUserInterface()
     {
-        super.layoutSubviews()
-        
         guard let itemRenderer = itemRenderer,
             outputRenderer = outputRenderer else
         {
             return
         }
+        
+        // clear down...
+        
+        itemRenderer.removeFromSuperview()
+        outputRenderer.removeFromSuperview()
+        
+        for inputRendeer in inputRowRenderers
+        {
+            inputRendeer.removeFromSuperview()
+        }
+        
+        // set up....
         
         addSubview(itemRenderer)
         
@@ -93,12 +103,15 @@ class SNNodeWidget: UIView
                     height: inputRowRenderer.intrinsicContentSize().height)
                 
                 inputOutputRowsHeight += inputRowRenderer.intrinsicContentSize().height
-                
-                if let input = node.inputs?[i] where i < node.inputs?.count
+        
+                if i < node.inputs?.count
                 {
-                    inputRowRenderer.node = input; print("setting input")
-                    
-                    inputRowRenderer.reload()
+                    if let input = node.inputs?[i]
+                    {
+                        inputRowRenderer.node = input
+                        
+                        inputRowRenderer.reload()
+                    }
                 }
             }
         }
@@ -116,6 +129,13 @@ class SNNodeWidget: UIView
             y: frame.origin.y,
             width: itemRenderer.intrinsicContentSize().width + 2,
             height: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight)
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
+        
+        buildUserInterface()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)

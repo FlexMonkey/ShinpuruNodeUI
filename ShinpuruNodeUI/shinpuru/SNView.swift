@@ -50,9 +50,17 @@ class SNView: UIScrollView
     func reloadNode(node: SNNode)
     {
         guard let nodes = nodes,
-            let itemRenderer = widgetsDictionary[node]?.itemRenderer else
+            widget = widgetsDictionary[node],
+            itemRenderer = widgetsDictionary[node]?.itemRenderer else
         {
             return
+        }
+        
+        if widget.inputRowRenderers.count != node.inputSlots
+        {
+            widget.buildUserInterface()
+            
+            renderRelationships()
         }
         
         itemRenderer.reload()
