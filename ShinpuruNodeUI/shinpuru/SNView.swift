@@ -27,10 +27,24 @@ class SNView: UIScrollView
         }
     }
     
+    var relationshipCreationMode: Bool = false
+    {
+        didSet
+        {
+            nodesView.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+        }
+    }
+    
     var selectedNode: SNNode?
     {
         didSet
         {
+            if let sourceNode = oldValue,
+                targetNode = selectedNode where relationshipCreationMode
+            {
+                createRelationship(sourceNode, targetNode: targetNode)
+            }
+            
             if let previousNode = oldValue
             {
                 widgetsDictionary[previousNode]?.layer.shadowColor = nil
@@ -59,13 +73,25 @@ class SNView: UIScrollView
         addSubview(nodesView)
         
         renderNodes()
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        nodesView.addGestureRecognizer(longPress)
+    }
+    
+    func longPressHandler(recognizer: UILongPressGestureRecognizer)
+    {
+        if recognizer.state == UIGestureRecognizerState.Began
+        {
+            nodeDelegate?.nodeCreatedInView(self, position: recognizer.locationInView(nodesView))
+        }
     }
     
     func reloadNode(node: SNNode)
     {
+        let widget = createWidgetForNode(node)
+        
         guard let nodes = nodes,
-            widget = widgetsDictionary[node],
-            itemRenderer = widgetsDictionary[node]?.itemRenderer else
+            itemRenderer = widget.itemRenderer else
         {
             return
         }
@@ -74,7 +100,7 @@ class SNView: UIScrollView
         {
             widget.buildUserInterface()
             
-            renderRelationships()
+            setNeedsLayout()
         }
         
         itemRenderer.reload()
@@ -106,16 +132,40 @@ class SNView: UIScrollView
         
         for node in nodes
         {
-            if widgetsDictionary[node] == nil
-            {
-                let widget = SNNodeWidget(view: self, node: node)
-                
-                widgetsDictionary[node] = widget
-                
-                nodesView.addSubview(widget)
-            }
+            createWidgetForNode(node)
         }
         
+        renderRelationships()
+    }
+    
+    func createWidgetForNode(node: SNNode) -> SNNodeWidget
+    {
+        if let widget = widgetsDictionary[node]
+        {
+            return widget
+        }
+        else
+        {
+            let widget = SNNodeWidget(view: self, node: node)
+            
+            widgetsDictionary[node] = widget
+            
+            nodesView.addSubview(widget)
+            
+            return widget
+        }
+    }
+    
+    func createRelationship(sourceNode: SNNode, targetNode: SNNode)
+    {
+        nodeDelegate?.relationshipCreatedInView(self, sourceNode: sourceNode, targetNode: targetNode, targetIndex: 0)
+        
+        relationshipCreationMode = false
+        
+        widgetsDictionary[targetNode]?.inputRowRenderers[0].node = sourceNode
+        widgetsDictionary[targetNode]?.inputRowRenderers[0].reload()
+        
+        reloadNode(targetNode)
         renderRelationships()
     }
     

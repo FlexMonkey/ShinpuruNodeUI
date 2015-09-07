@@ -51,6 +51,10 @@ protocol SNDelegate: NSObjectProtocol
     func nodeSelectedInView(view: SNView, node: SNNode?)
     
     func nodeMovedInView(view: SNView, node: SNNode)
+    
+    func nodeCreatedInView(view: SNView, position: CGPoint)
+    
+    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetIndex: Int)
 }
 
 /// Base class for node item renderer

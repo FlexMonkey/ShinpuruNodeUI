@@ -11,7 +11,7 @@
         
     * Add nodes
     * delete nodes
-    * build relationships
+    * build relationships ** added long press to node widget
     * remove relatinships
 
 */
@@ -22,7 +22,7 @@ class ViewController: UIViewController
 {
     let shinpuruNodeUI = SNView()
     
-    let demoModel = DemoModel()
+    var demoModel = DemoModel()
     
     let slider: UISlider
     let operatorsControl: UISegmentedControl
@@ -175,5 +175,17 @@ extension ViewController: SNDelegate
     func nodeMovedInView(view: SNView, node: SNNode)
     {
         // handle a node move - save to CoreData?
+    }
+    
+    func nodeCreatedInView(view: SNView, position: CGPoint)
+    {
+        let newNode = demoModel.addNodeAt(position)
+        
+        shinpuruNodeUI.reloadNode(newNode)
+    }
+    
+    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetIndex: Int)
+    {
+        demoModel.creatRelationship(sourceNode, targetNode: targetNode, targetIndex: 0)
     }
 }

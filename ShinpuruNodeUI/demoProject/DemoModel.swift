@@ -28,6 +28,27 @@ struct DemoModel
         updateDescendantNodes(three)
     }
     
+    mutating func creatRelationship(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int)
+    {
+        if targetNode.inputs == nil
+        {
+            targetNode.inputs = [DemoNode]()
+        }
+        
+        targetNode.inputs![0] = sourceNode
+        
+        updateDescendantNodes(sourceNode.demoNode!)
+    }
+    
+    mutating func addNodeAt(position: CGPoint) -> DemoNode
+    {
+        let newNode = DemoNode(name: "New!", position: position, value: DemoNodeValue.Number(1))
+        
+        nodes.append(newNode)
+        
+        return newNode
+    }
+    
     func updateDescendantNodes(sourceNode: DemoNode) -> [DemoNode]
     {
         var updatedDatedNodes = [[sourceNode]]
@@ -42,7 +63,7 @@ struct DemoModel
                 updatedDatedNodes.append(updateDescendantNodes(targetNode))
             }
         }
-        
-        return updatedDatedNodes.flatMap{ $0 }
+
+        return Array(Set<DemoNode>(updatedDatedNodes.flatMap{ $0 })) //  updatedDatedNodes.flatMap{ $0 }
     }
 }

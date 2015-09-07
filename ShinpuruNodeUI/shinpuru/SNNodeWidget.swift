@@ -25,6 +25,9 @@ class SNNodeWidget: UIView
         let pan = UIPanGestureRecognizer(target: self, action: "panHandler:")
         addGestureRecognizer(pan)
         
+        let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        addGestureRecognizer(longPress)
+        
         setNeedsLayout()
         
         layer.borderColor = UIColor.whiteColor().CGColor
@@ -145,6 +148,14 @@ class SNNodeWidget: UIView
         self.superview?.bringSubviewToFront(self)
         
         view.selectedNode = node
+    }
+    
+    func longPressHandler(recognizer: UILongPressGestureRecognizer)
+    {
+        if recognizer.state == UIGestureRecognizerState.Began
+        {
+            view.relationshipCreationMode = true
+        }
     }
     
     func panHandler(recognizer: UIPanGestureRecognizer)

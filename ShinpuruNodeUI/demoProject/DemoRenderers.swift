@@ -8,6 +8,8 @@
 
 import UIKit
 
+let DemoWidgetWidth = 100
+
 class DemoInputRowRenderer: SNInputRowRenderer
 {
     let label = UILabel()
@@ -51,7 +53,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: 100, height: 25)
+        return CGSize(width: DemoWidgetWidth, height: 25)
     }
     
     override func layoutSubviews()
@@ -97,7 +99,7 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: 100, height: 25)
+        return CGSize(width: DemoWidgetWidth, height: 25)
     }
     
     override func layoutSubviews()
@@ -163,6 +165,6 @@ class DemoRenderer: SNItemRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: 100, height: 75)
+        return CGSize(width: DemoWidgetWidth, height: 75)
     }
 }
