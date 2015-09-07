@@ -20,37 +20,22 @@ import UIKit
 
 class ViewController: UIViewController
 {
-    let shinpuruNodeUI: SNView
+    let shinpuruNodeUI = SNView()
+    
+    let demoModel = DemoModel()
     
     let slider: UISlider
     let operatorsControl: UISegmentedControl
     let controlsStackView: UIStackView
     
-    var nodes: [SNNode]
-    
     required init?(coder aDecoder: NSCoder)
     {
-        shinpuruNodeUI = SNView()
-        
         slider = UISlider(frame: CGRectZero)
         operatorsControl = UISegmentedControl(items: DemoNodeType.operators.map{ $0.rawValue })
         controlsStackView = UIStackView(frame: CGRectZero)
         
-        let one = DemoNode(name: "One", position: CGPoint(x: 10, y: 10), value: DemoNodeValue.Number(1))
-        let two = DemoNode(name: "Two", position: CGPoint(x: 20, y: 150), value: DemoNodeValue.Number(2))
-        let three = DemoNode(name: "Three", position: CGPoint(x: 35, y: 320), value: DemoNodeValue.Number(3))
-        let add = DemoNode(name: "Add", position: CGPoint(x: 270, y: 70), type: DemoNodeType.Add, inputs: [one, nil, two, three])
-        let subtract = DemoNode(name: "Subtract", position: CGPoint(x: 420, y: 320), type: DemoNodeType.Subtract, inputs: [add, three])
-        let multiply = DemoNode(name: "Multiply", position: CGPoint(x: 600, y: 200), type: DemoNodeType.Multiply, inputs: [subtract, add])
-        
-        nodes = [one, two, three, add, subtract, multiply]
-        
         super.init(coder: aDecoder)
- 
-        updateDescendantNodes(one)
-        updateDescendantNodes(two)
-        updateDescendantNodes(three)
- 
+
         shinpuruNodeUI.nodeDelegate = self
     }
     
@@ -96,9 +81,8 @@ class ViewController: UIViewController
         if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type.isOperator
         {
             selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
-            shinpuruNodeUI.reloadNode(selectedNode)
             
-            updateDescendantNodes(selectedNode)
+            demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
         }
     }
     
@@ -107,26 +91,8 @@ class ViewController: UIViewController
         if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type == .Numeric
         {
             selectedNode.value = DemoNodeValue.Number(round(slider.value))
-            shinpuruNodeUI.reloadNode(selectedNode)
             
-            updateDescendantNodes(selectedNode)
-        }
-    }
-    
-    // MARK: Nodes stuff
-    
-    func updateDescendantNodes(sourceNode: DemoNode)
-    {
-        for targetNode in nodes where targetNode != sourceNode
-        {
-            if let inputs = targetNode.inputs,
-                targetNode = targetNode.demoNode where inputs.indexOf({$0 == sourceNode}) != nil
-            {
-                targetNode.recalculate()
-                shinpuruNodeUI.reloadNode(targetNode)
-                
-                updateDescendantNodes(targetNode)
-            }
+            demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
         }
     }
     
@@ -154,7 +120,7 @@ extension ViewController: SNDelegate
 {
     func dataProviderForView(view: SNView) -> [SNNode]?
     {
-        return nodes
+        return demoModel.nodes
     }
     
     func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
