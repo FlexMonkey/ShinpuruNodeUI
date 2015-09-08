@@ -151,21 +151,21 @@ class SNView: UIScrollView
         }
     }
     
-    func createRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
+    func toggleRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
     {
         guard let sourceNode = selectedNode where relationshipCreationMode else
         {
             return
         }
         
-        nodeDelegate?.relationshipCreatedInView(self,
+        nodeDelegate?.relationshipToggledInView(self,
             sourceNode: sourceNode,
             targetNode: targetNode,
             targetNodeInputIndex: targetNodeInputIndex)
         
         relationshipCreationMode = false
         
-        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].node = sourceNode
+        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].node = targetNode.inputs?[targetNodeInputIndex]
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
         reloadNode(targetNode)

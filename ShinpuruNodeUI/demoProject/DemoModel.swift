@@ -28,7 +28,7 @@ struct DemoModel
         updateDescendantNodes(three)
     }
     
-    mutating func createRelationship(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int)
+    mutating func toggleRelationship(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> [DemoNode]
     {
         if targetNode.inputs == nil
         {
@@ -42,9 +42,20 @@ struct DemoModel
             }
         }
         
-        targetNode.inputs![targetIndex] = sourceNode
+        if targetNode.inputs![targetIndex] == sourceNode
+        {
+            targetNode.inputs![targetIndex] = nil
+            
+            return updateDescendantNodes(sourceNode.demoNode!, forceNode: targetNode.demoNode!)
+        }
+        else
+        {
+            targetNode.inputs![targetIndex] = sourceNode
+            
+            return updateDescendantNodes(sourceNode.demoNode!)
+        }
+
         
-        updateDescendantNodes(sourceNode.demoNode!)
     }
     
     mutating func addNodeAt(position: CGPoint) -> DemoNode
@@ -56,14 +67,14 @@ struct DemoModel
         return newNode
     }
     
-    func updateDescendantNodes(sourceNode: DemoNode) -> [DemoNode]
+    func updateDescendantNodes(sourceNode: DemoNode, forceNode: DemoNode? = nil) -> [DemoNode]
     {
         var updatedDatedNodes = [[sourceNode]]
         
         for targetNode in nodes where targetNode != sourceNode
         {
             if let inputs = targetNode.inputs,
-                targetNode = targetNode.demoNode where inputs.indexOf({$0 == sourceNode}) != nil
+                targetNode = targetNode.demoNode where inputs.indexOf({$0 == sourceNode}) != nil || targetNode == forceNode
             {
                 targetNode.recalculate()
                 

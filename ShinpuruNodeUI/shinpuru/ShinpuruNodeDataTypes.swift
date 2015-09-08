@@ -54,7 +54,7 @@ protocol SNDelegate: NSObjectProtocol
     
     func nodeCreatedInView(view: SNView, position: CGPoint)
     
-    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
 }
 
 /// Base class for node item renderer
@@ -102,15 +102,17 @@ class SNOutputRowRenderer: UIView
 
 /// Base class for input row renderer
 
-class SNInputRowRenderer: SNOutputRowRenderer
+class SNInputRowRenderer: UIView
 {
     var index: Int
+    var node: SNNode?
     
-    required init(index: Int, node: SNNode)
+    required init(index: Int, node: SNNode?)
     {
         self.index = index
+        self.node = node
         
-        super.init(node: node)
+        super.init(frame: CGRectZero)
     }
 
     func reload()

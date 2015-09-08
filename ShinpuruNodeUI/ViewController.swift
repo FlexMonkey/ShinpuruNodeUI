@@ -182,8 +182,8 @@ extension ViewController: SNDelegate
         shinpuruNodeUI.reloadNode(newNode)
     }
     
-    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        demoModel.createRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
+        demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ shinpuruNodeUI.reloadNode($0) }
     }
 }

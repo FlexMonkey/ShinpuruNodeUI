@@ -26,10 +26,12 @@ class DemoInputRowRenderer: SNInputRowRenderer
         line.lineWidth = 2
     }
     
-    override var node: SNNode
+    override var node: SNNode?
     {
         didSet
         {
+            super.node = node
+            
             updateLabel()
         }
     }
@@ -41,13 +43,17 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     func updateLabel()
     {
-        if let value = node.demoNode?.value
+        if let value = node?.demoNode?.value, name = node?.name
         {
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
-                label.text = "\(floatValue)"
+                label.text = "\(name) \(floatValue)"
             }
+        }
+        else
+        {
+           label.text = ""
         }
     }
     

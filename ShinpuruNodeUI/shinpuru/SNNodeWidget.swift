@@ -151,7 +151,7 @@ class SNNodeWidget: UIView
             inputNodeWidget = self.hitTest(touchLocation, withEvent: event) as? SNInputRowRenderer,
             targetNodeInputIndex = inputRowRenderers.indexOf(inputNodeWidget)
         {
-            view.createRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
+            view.toggleRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
         }
         
         view.selectedNode = node
