@@ -10,7 +10,6 @@
     To do
         
     * delete nodes
-    * build relationships ** do index!!!
     * remove relatinships
 
 */
@@ -185,6 +184,6 @@ extension ViewController: SNDelegate
     
     func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        demoModel.creatRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
+        demoModel.createRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
     }
 }

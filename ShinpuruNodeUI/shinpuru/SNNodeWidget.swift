@@ -147,11 +147,13 @@ class SNNodeWidget: UIView
         
         self.superview?.bringSubviewToFront(self)
         
-        if let inputNodeWidget = self.hitTest((touches.first?.locationInView(self))!, withEvent: event) as? SNInputRowRenderer,
-            targetNodeInputIndex = node.inputs?.indexOf({ $0 == inputNodeWidget.node})
+        if let touchLocation = touches.first?.locationInView(self),
+            inputNodeWidget = self.hitTest(touchLocation, withEvent: event) as? SNInputRowRenderer,
+            targetNodeInputIndex = inputRowRenderers.indexOf(inputNodeWidget)
         {
             view.createRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
         }
+        
         view.selectedNode = node
     }
     
