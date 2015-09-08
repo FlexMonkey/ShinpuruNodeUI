@@ -9,9 +9,8 @@
 /*
     To do
         
-    * Add nodes
     * delete nodes
-    * build relationships ** added long press to node widget
+    * build relationships ** do index!!!
     * remove relatinships
 
 */
@@ -184,8 +183,8 @@ extension ViewController: SNDelegate
         shinpuruNodeUI.reloadNode(newNode)
     }
     
-    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetIndex: Int)
+    func relationshipCreatedInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        demoModel.creatRelationship(sourceNode, targetNode: targetNode, targetIndex: 0)
+        demoModel.creatRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
     }
 }

@@ -13,7 +13,7 @@ class SNView: UIScrollView
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
     private let curvesLayer = SNRelationshipCurvesLayer()
     private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
-    
+
     var nodes: [SNNode]?
     {
         return nodeDelegate?.dataProviderForView(self)
@@ -39,12 +39,6 @@ class SNView: UIScrollView
     {
         didSet
         {
-            if let sourceNode = oldValue,
-                targetNode = selectedNode where relationshipCreationMode
-            {
-                createRelationship(sourceNode, targetNode: targetNode)
-            }
-            
             if let previousNode = oldValue
             {
                 widgetsDictionary[previousNode]?.layer.shadowColor = nil
@@ -53,6 +47,7 @@ class SNView: UIScrollView
             }
             
             nodeDelegate?.nodeSelectedInView(self, node: selectedNode)
+            relationshipCreationMode = false
             
             if let selectedNode = selectedNode
             {
@@ -156,14 +151,22 @@ class SNView: UIScrollView
         }
     }
     
-    func createRelationship(sourceNode: SNNode, targetNode: SNNode)
+    func createRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        nodeDelegate?.relationshipCreatedInView(self, sourceNode: sourceNode, targetNode: targetNode, targetIndex: 0)
+        guard let sourceNode = selectedNode where relationshipCreationMode else
+        {
+            return
+        }
+        
+        nodeDelegate?.relationshipCreatedInView(self,
+            sourceNode: sourceNode,
+            targetNode: targetNode,
+            targetNodeInputIndex: targetNodeInputIndex)
         
         relationshipCreationMode = false
         
-        widgetsDictionary[targetNode]?.inputRowRenderers[0].node = sourceNode
-        widgetsDictionary[targetNode]?.inputRowRenderers[0].reload()
+        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].node = sourceNode
+        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
         reloadNode(targetNode)
         renderRelationships()
