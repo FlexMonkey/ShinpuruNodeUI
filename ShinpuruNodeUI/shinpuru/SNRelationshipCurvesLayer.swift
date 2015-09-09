@@ -69,7 +69,7 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                         let inputPosition = CGPoint(x: targetNode.position.x + targetWidgetWidth,
                             y: targetNode.position.y + CGFloat(targetWidgetHeight) + (targetOutputRow.intrinsicContentSize().height / 2))
                         
-                        let targetY = sourceNode.position.y + inputRowsHeight + CGFloat(rowHeight / 2) + sourceItemRendererHeight
+                        let targetY = sourceNode.position.y + inputRowsHeight + CGFloat(rowHeight / 2) + sourceItemRendererHeight + SNNodeWidget.titleBarHeight
                         
                         let targetPosition = CGPoint(x: sourceNode.position.x, y: targetY)
                         

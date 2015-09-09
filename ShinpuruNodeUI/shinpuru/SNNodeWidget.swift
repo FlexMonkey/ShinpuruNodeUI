@@ -10,10 +10,14 @@ import UIKit
 
 class SNNodeWidget: UIView
 {
+    static let titleBarHeight: CGFloat = 44
+    
     let view: SNView
     let node: SNNode
     var inputRowRenderers = [SNInputRowRenderer]()
     var previousPanPoint: CGPoint?
+    
+    let titleBar = SNWidgetTitleBar()
     
     required init(view: SNView, node: SNNode)
     {
@@ -83,15 +87,30 @@ class SNNodeWidget: UIView
         
         // set up....
         
+        // title bar
+        
+        addSubview(titleBar)
+        
+        titleBar.title = node.name
+        
+        titleBar.parentNodeWidget = self
+        
+        titleBar.frame = CGRect(x: 1,
+            y: 0,
+            width: itemRenderer.intrinsicContentSize().width,
+            height: SNNodeWidget.titleBarHeight)
+        
+        // main item renderer
+        
         addSubview(itemRenderer)
         
         itemRenderer.frame = CGRect(x: 1,
-            y: 0,
+            y: SNNodeWidget.titleBarHeight,
             width: itemRenderer.intrinsicContentSize().width,
             height: itemRenderer.intrinsicContentSize().height)
         
         inputRowRenderers.removeAll()
-        var inputOutputRowsHeight: CGFloat = 0
+        var inputOutputRowsHeight: CGFloat = SNNodeWidget.titleBarHeight
         
         for i in 0 ..< node.inputSlots
         {
@@ -157,6 +176,11 @@ class SNNodeWidget: UIView
         view.selectedNode = node
     }
     
+    func deleteHandler()
+    {
+        print("delete this node!")
+    }
+    
     func longPressHandler(recognizer: UILongPressGestureRecognizer)
     {
         if recognizer.state == UIGestureRecognizerState.Began
@@ -204,4 +228,47 @@ class SNNodeWidget: UIView
     {
        
     }
+}
+
+class SNWidgetTitleBar: UIToolbar
+{
+    let label: UIBarButtonItem
+    
+    var parentNodeWidget: SNNodeWidget?
+    
+    var title: String = ""
+    {
+        didSet
+        {
+            label.title = title
+        }
+    }
+    
+    override init(frame: CGRect)
+    {
+        label = UIBarButtonItem(title: title, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        
+        super.init(frame: frame)
+
+        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let trash = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteHandler")
+        
+        items = [label, spacer, trash]
+        
+        tintColor = UIColor.whiteColor()
+        barTintColor = UIColor.darkGrayColor()
+    }
+
+    func deleteHandler()
+    {
+        parentNodeWidget?.deleteHandler()
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+ 
+    
+    
 }

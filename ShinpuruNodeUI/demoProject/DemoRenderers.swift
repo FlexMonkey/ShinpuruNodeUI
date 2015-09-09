@@ -8,7 +8,7 @@
 
 import UIKit
 
-let DemoWidgetWidth = 100
+let DemoWidgetWidth: CGFloat = 200
 
 class DemoInputRowRenderer: SNInputRowRenderer
 {
@@ -59,12 +59,12 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: DemoWidgetWidth, height: 25)
+        return CGSize(width: DemoWidgetWidth, height: SNNodeWidget.titleBarHeight)
     }
     
     override func layoutSubviews()
     {
-        label.frame = bounds.insetBy(dx: 2, dy: 0)
+        label.frame = bounds.insetBy(dx: 5, dy: 0)
         
         let linePath = UIBezierPath()
         linePath.moveToPoint(CGPoint(x: 0, y: bounds.height))
@@ -105,12 +105,12 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: DemoWidgetWidth, height: 25)
+        return CGSize(width: DemoWidgetWidth, height: SNNodeWidget.titleBarHeight)
     }
     
     override func layoutSubviews()
     {
-        label.frame = bounds.insetBy(dx: 2, dy: 0)
+        label.frame = bounds.insetBy(dx: 5, dy: 0)
         
         let linePath = UIBezierPath()
         linePath.moveToPoint(CGPoint(x: 0, y: 0))
@@ -171,6 +171,6 @@ class DemoRenderer: SNItemRenderer
     
     override func intrinsicContentSize() -> CGSize
     {
-        return CGSize(width: DemoWidgetWidth, height: 75)
+        return CGSize(width: DemoWidgetWidth, height: DemoWidgetWidth)
     }
 }
