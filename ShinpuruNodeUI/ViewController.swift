@@ -9,7 +9,8 @@
 /*
     To do
         
-    * delete nodes
+    * change node type (numeric / operator)
+    * node output type (e.g. color)
 
 */
 

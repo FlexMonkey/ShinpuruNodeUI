@@ -102,12 +102,9 @@ class SNView: UIScrollView
         
         for otherNode in nodes where otherNode != node && otherNode.inputs != nil
         {
-            for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)!
+            for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.node == node
             {
-                if otherNodeInputRenderer.node == node
-                {
-                    otherNodeInputRenderer.reload()
-                }
+                otherNodeInputRenderer.reload()
             }
         }
     }
@@ -121,15 +118,14 @@ class SNView: UIScrollView
             
             for otherNode in nodes where otherNode != node && otherNode.inputs != nil
             {
-                for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)!
+                for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.node == node
                 {
-                    if otherNodeInputRenderer.node == node
-                    {
-                        otherNodeInputRenderer.node = nil 
-                        otherNodeInputRenderer.reload()
-                    }
+                    otherNodeInputRenderer.node = nil
+                    otherNodeInputRenderer.reload()
                 }
             }
+            
+            selectedNode = nil
         }
         
         nodeDelegate?.nodeDeletedInView(self, node: node)
