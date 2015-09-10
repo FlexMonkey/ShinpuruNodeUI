@@ -184,6 +184,10 @@ extension ViewController: SNDelegate
     
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ shinpuruNodeUI.reloadNode($0) }
+        if let targetNode = targetNode as? DemoNode,
+            sourceNode = sourceNode as? DemoNode
+        {
+            demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ shinpuruNodeUI.reloadNode($0) }
+        }
     }
 }

@@ -28,7 +28,7 @@ struct DemoModel
         // updateDescendantNodes(three)
     }
     
-    mutating func toggleRelationship(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> [DemoNode]
+    mutating func toggleRelationship(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> [DemoNode]
     {
         if targetNode.inputs == nil
         {
