@@ -133,7 +133,7 @@ enum DemoNodeType: String
     
     var isOperator: Bool
     {
-        return DemoNodeType.operators.indexOf(self) != nil
+        return DemoNodeType.operators.contains(self)
     }
 }
 

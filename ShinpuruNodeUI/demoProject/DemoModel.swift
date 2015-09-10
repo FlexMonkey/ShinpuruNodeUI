@@ -60,7 +60,7 @@ struct DemoModel
     {
         var updatedNodes = [DemoNode]()
         
-        for node in nodes where node.inputs != nil && node.inputs!.indexOf({$0 == deletedNode}) != nil
+        for node in nodes where node.inputs != nil && node.inputs!.contains({$0 == deletedNode})
         {
             for (idx, inputNode) in node.inputs!.enumerate() where inputNode == deletedNode
             {
@@ -96,7 +96,7 @@ struct DemoModel
         for targetNode in nodes where targetNode != sourceNode
         {
             if let inputs = targetNode.inputs,
-                targetNode = targetNode.demoNode where inputs.indexOf({$0 == sourceNode}) != nil || targetNode == forceNode
+                targetNode = targetNode.demoNode where inputs.contains({$0 == sourceNode}) || targetNode == forceNode
             {
                 targetNode.recalculate()
                 

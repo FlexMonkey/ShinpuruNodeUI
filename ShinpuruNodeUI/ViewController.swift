@@ -140,6 +140,9 @@ extension ViewController: SNDelegate
     {
         guard let node = node?.demoNode else
         {
+            slider.enabled = false
+            operatorsControl.enabled = false
+            
             return
         }
         
