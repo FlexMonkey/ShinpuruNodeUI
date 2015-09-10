@@ -178,7 +178,7 @@ class SNNodeWidget: UIView
     
     func deleteHandler()
     {
-        print("delete this node!")
+        view.nodeDeleted(node)
     }
     
     func longPressHandler(recognizer: UILongPressGestureRecognizer)
@@ -215,7 +215,7 @@ class SNNodeWidget: UIView
             
             node.position = newPosition
             
-            view.nodeMoved(view, node: node)
+            view.nodeMoved(node)
         }
     }
     

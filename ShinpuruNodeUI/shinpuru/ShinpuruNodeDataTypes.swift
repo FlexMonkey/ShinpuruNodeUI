@@ -54,6 +54,8 @@ protocol SNDelegate: NSObjectProtocol
     
     func nodeCreatedInView(view: SNView, position: CGPoint)
     
+    func nodeDeletedInView(view: SNView, node: SNNode)
+    
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
 }
 

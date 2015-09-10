@@ -54,8 +54,30 @@ struct DemoModel
             
             return updateDescendantNodes(sourceNode.demoNode!)
         }
-
+    }
+    
+    mutating func deleteNode(deletedNode: DemoNode) -> [DemoNode]
+    {
+        var updatedNodes = [DemoNode]()
         
+        for node in nodes where node.inputs != nil && node.inputs!.indexOf({$0 == deletedNode}) != nil
+        {
+            for (idx, inputNode) in node.inputs!.enumerate() where inputNode == deletedNode
+            {
+                node.inputs?[idx] = nil
+                
+                node.recalculate()
+                
+                updatedNodes.appendContentsOf(updateDescendantNodes(node))
+            }
+        }
+        
+        if let deletedNodeIndex = nodes.indexOf(deletedNode)
+        {
+            nodes.removeAtIndex(deletedNodeIndex)
+        }
+        
+        return updatedNodes
     }
     
     mutating func addNodeAt(position: CGPoint) -> DemoNode

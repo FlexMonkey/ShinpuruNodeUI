@@ -98,7 +98,7 @@ class SNView: UIScrollView
             setNeedsLayout()
         }
         
-        itemRenderer.reload()
+        itemRenderer.reload();
         
         for otherNode in nodes where otherNode != node && otherNode.inputs != nil
         {
@@ -112,7 +112,30 @@ class SNView: UIScrollView
         }
     }
     
-    func nodeMoved(view: SNView, node: SNNode)
+    func nodeDeleted(node: SNNode)
+    {
+        if let widget = widgetsDictionary[node],
+            nodes = nodes
+        {
+            widget.removeFromSuperview()
+            
+            for otherNode in nodes where otherNode != node && otherNode.inputs != nil
+            {
+                for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)!
+                {
+                    if otherNodeInputRenderer.node == node
+                    {
+                        otherNodeInputRenderer.node = nil 
+                        otherNodeInputRenderer.reload()
+                    }
+                }
+            }
+        }
+        
+        nodeDelegate?.nodeDeletedInView(self, node: node)
+    }
+    
+    func nodeMoved(node: SNNode)
     {
         nodeDelegate?.nodeMovedInView(self, node: node)
         renderRelationships()

@@ -10,7 +10,6 @@
     To do
         
     * delete nodes
-    * remove relatinships
 
 */
 
@@ -179,7 +178,17 @@ extension ViewController: SNDelegate
     {
         let newNode = demoModel.addNodeAt(position)
         
-        shinpuruNodeUI.reloadNode(newNode)
+        view.reloadNode(newNode)
+    }
+    
+    func nodeDeletedInView(view: SNView, node: SNNode)
+    {
+        if let node = node as? DemoNode
+        {
+            demoModel.deleteNode(node).forEach{ view.reloadNode($0) }
+            
+            view.renderRelationships()
+        }
     }
     
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
@@ -187,7 +196,7 @@ extension ViewController: SNDelegate
         if let targetNode = targetNode as? DemoNode,
             sourceNode = sourceNode as? DemoNode
         {
-            demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ shinpuruNodeUI.reloadNode($0) }
+            demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ view.reloadNode($0) }
         }
     }
 }
