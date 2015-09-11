@@ -34,7 +34,8 @@ struct DemoModel
         {
             targetNode.inputs = [DemoNode]()
         }
-        else if targetIndex >= targetNode.inputs?.count
+        
+        if targetIndex >= targetNode.inputs?.count
         {
             for _ in 0 ... targetIndex - targetNode.inputs!.count
             {

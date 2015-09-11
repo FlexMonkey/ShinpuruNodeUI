@@ -9,7 +9,7 @@
 /*
     To do
         
-    * change node type (numeric / operator)
+    * change node type (numeric / operator) - new UISwitch
     * node output type (e.g. color)
 
 */
@@ -25,11 +25,13 @@ class ViewController: UIViewController
     let slider: UISlider
     let operatorsControl: UISegmentedControl
     let controlsStackView: UIStackView
+    let isOperatorSwitch: UISwitch
     
     required init?(coder aDecoder: NSCoder)
     {
         slider = UISlider(frame: CGRectZero)
         operatorsControl = UISegmentedControl(items: DemoNodeType.operators.map{ $0.rawValue })
+        isOperatorSwitch = UISwitch(frame: CGRectZero)
         controlsStackView = UIStackView(frame: CGRectZero)
         
         super.init(coder: aDecoder)
@@ -62,11 +64,16 @@ class ViewController: UIViewController
         operatorsControl.tintColor = UIColor.whiteColor()
         operatorsControl.addTarget(self, action: "operatorsControlChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
         
+        // isOperatorSwitch
+        isOperatorSwitch.enabled = false
+        isOperatorSwitch.addTarget(self, action: "isOperatorSwitchChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        
         // toolbar stak view
-        controlsStackView.distribution = UIStackViewDistribution.FillEqually
+        controlsStackView.distribution = UIStackViewDistribution.Fill
+        controlsStackView.spacing = 10
         
         controlsStackView.addArrangedSubview(slider)
-        controlsStackView.addArrangedSubview(UIView(frame: CGRectZero))
+        controlsStackView.addArrangedSubview(isOperatorSwitch)
         controlsStackView.addArrangedSubview(operatorsControl)
 
         view.addSubview(controlsStackView)
@@ -91,6 +98,20 @@ class ViewController: UIViewController
             selectedNode.value = DemoNodeValue.Number(round(slider.value))
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
+        }
+    }
+    
+    func isOperatorSwitchChangeHandler()
+    {
+        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode 
+        {
+            selectedNode.type = isOperatorSwitch.on
+                ? DemoNodeType.Add
+                : DemoNodeType.Numeric
+            
+            demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
+            
+            nodeSelectedInView(shinpuruNodeUI, node: selectedNode)
         }
     }
     
@@ -142,9 +163,12 @@ extension ViewController: SNDelegate
         {
             slider.enabled = false
             operatorsControl.enabled = false
+            isOperatorSwitch.enabled = false
             
             return
         }
+        
+        isOperatorSwitch.enabled = true
         
         switch node.type
         {
@@ -152,6 +176,7 @@ extension ViewController: SNDelegate
             slider.enabled = true
             operatorsControl.enabled = false
             operatorsControl.selectedSegmentIndex = -1
+            isOperatorSwitch.on = false
             
             if let nodeValue = node.value
             {
@@ -165,6 +190,7 @@ extension ViewController: SNDelegate
         case .Add, .Subtract, .Multiply, .Divide:
             slider.enabled = false
             operatorsControl.enabled = true
+            isOperatorSwitch.on = true
             
             if let targetIndex = DemoNodeType.operators.indexOf(DemoNodeType(rawValue: node.type.rawValue)!)
             {

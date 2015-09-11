@@ -116,6 +116,8 @@ class SNView: UIScrollView
         {
             widget.removeFromSuperview()
             
+            widgetsDictionary.removeValueForKey(node)
+            
             for otherNode in nodes where otherNode != node && otherNode.inputs != nil
             {
                 for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.node == node

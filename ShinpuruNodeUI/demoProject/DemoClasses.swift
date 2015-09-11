@@ -14,6 +14,15 @@ class DemoNode: SNNode
     {
         didSet
         {
+            if type.isOperator && inputs == nil
+            {
+                inputs = [DemoNode]()
+            }
+            else if !type.isOperator
+            {
+                inputs = nil
+            }
+            
             recalculate()
         }
     }
@@ -74,7 +83,7 @@ class DemoNode: SNNode
             floatValue = value?.floatValue ?? Float(0)
         }
         
-        if let inputs = inputs where inputs.count >= type.inputSlots
+        if let inputs = inputs where inputs.count >= type.inputSlots && type.inputSlots > 0
         {
             self.inputs = Array(inputs[0 ... type.inputSlots - 1])
         }
