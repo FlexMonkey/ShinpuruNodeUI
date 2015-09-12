@@ -22,6 +22,8 @@ class DemoNode: SNNode
             {
                 inputs = nil
             }
+        
+            name = type.isOperator ? "operator" : "number"
             
             recalculate()
         }

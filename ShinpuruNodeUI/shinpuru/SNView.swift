@@ -77,13 +77,22 @@ class SNView: UIScrollView, UIScrollViewDelegate
         nodesContainer.addGestureRecognizer(longPress)
     }
     
-
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
+        super.touchesBegan(touches, withEvent: event)
+        
+        relationshipCreationMode = false
+    }
     
     func longPressHandler(recognizer: UILongPressGestureRecognizer)
     {
-        if recognizer.state == UIGestureRecognizerState.Began
+        if let nodeDelegate = nodeDelegate where recognizer.state == UIGestureRecognizerState.Began
         {
-            nodeDelegate?.nodeCreatedInView(self, position: recognizer.locationInView(nodesContainer))
+            let newPodePosition = CGPoint(
+                x: recognizer.locationInView(nodesContainer).x - nodeDelegate.defaultNodeSize(self).width / 2,
+                y: recognizer.locationInView(nodesContainer).y - nodeDelegate.defaultNodeSize(self).height / 2)
+            
+            nodeDelegate.nodeCreatedInView(self, position: newPodePosition)
         }
     }
     
@@ -103,6 +112,8 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             setNeedsLayout()
         }
+        
+        widget.titleBar.label.title = node.name
         
         itemRenderer.reload();
         

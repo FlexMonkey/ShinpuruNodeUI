@@ -26,24 +26,25 @@ class SNNodesContainer: UIView
     {
         let gridLayer = CAShapeLayer()
         
-        let hGap = Int(frame.width / 50)
-        let vGap = Int(frame.height / 50)
+        let height = Int(frame.height)
+        let width = Int(frame.width)
         
-        print(hGap, vGap)
-        
+        let hGap = width / 50
+        let vGap = height / 50
+
         let gridPath = UIBezierPath()
         
         for i in 0...50
         {
             gridPath.moveToPoint(CGPoint(x: i * hGap, y: 0))
-            gridPath.addLineToPoint((CGPoint(x: i * hGap, y: Int(frame.height))))
+            gridPath.addLineToPoint((CGPoint(x: i * hGap, y: height)))
             
             gridPath.moveToPoint(CGPoint(x: 0, y: i * vGap))
-            gridPath.addLineToPoint((CGPoint(x: Int(frame.width), y: i * vGap)))
+            gridPath.addLineToPoint((CGPoint(x: width, y: i * vGap)))
         }
         
-        gridLayer.strokeColor = UIColor.darkGrayColor().CGColor
-        gridLayer.lineWidth = 1
+        gridLayer.strokeColor = UIColor(white: 0.2, alpha: 1).CGColor
+        gridLayer.lineWidth = 2
         
         gridLayer.path = gridPath.CGPath
         

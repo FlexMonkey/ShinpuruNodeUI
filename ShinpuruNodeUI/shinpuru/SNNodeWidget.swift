@@ -162,8 +162,6 @@ class SNNodeWidget: UIView
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        super.touchesBegan(touches, withEvent: event)
-        
         self.superview?.bringSubviewToFront(self)
         
         if let touchLocation = touches.first?.locationInView(self),
@@ -222,11 +220,6 @@ class SNNodeWidget: UIView
     override func intrinsicContentSize() -> CGSize
     {
         return CGSize(width: frame.width, height: frame.height)
-    }
-    
-    override func didMoveToSuperview()
-    {
-       
     }
 }
 

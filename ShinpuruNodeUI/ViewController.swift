@@ -9,7 +9,7 @@
 /*
     To do
         
-    * change node type (numeric / operator) - new UISwitch
+    * prevent recursive relationships
     * node output type (e.g. color)
 
 */
@@ -68,7 +68,7 @@ class ViewController: UIViewController
         isOperatorSwitch.enabled = false
         isOperatorSwitch.addTarget(self, action: "isOperatorSwitchChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
         
-        // toolbar stak view
+        // toolbar stack view
         controlsStackView.distribution = UIStackViewDistribution.Fill
         controlsStackView.spacing = 10
         
@@ -232,5 +232,10 @@ extension ViewController: SNDelegate
         {
             demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ view.reloadNode($0) }
         }
+    }
+    
+    func defaultNodeSize(view: SNView) -> CGSize
+    {
+        return CGSize(width: DemoWidgetWidth, height: DemoWidgetWidth + SNNodeWidget.titleBarHeight * 2)
     }
 }

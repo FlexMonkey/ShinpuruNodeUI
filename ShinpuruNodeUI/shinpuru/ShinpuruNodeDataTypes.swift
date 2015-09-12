@@ -57,6 +57,8 @@ protocol SNDelegate: NSObjectProtocol
     func nodeDeletedInView(view: SNView, node: SNNode)
     
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    
+    func defaultNodeSize(view: SNView) -> CGSize
 }
 
 /// Base class for node item renderer
@@ -94,6 +96,11 @@ class SNOutputRowRenderer: UIView
         self.node = node
         
         super.init(frame: CGRectZero)
+    }
+    
+    func reload()
+    {
+        fatalError("reload() has not been implemented")
     }
     
     required init?(coder aDecoder: NSCoder)
