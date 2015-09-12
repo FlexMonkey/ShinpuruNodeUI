@@ -73,11 +73,9 @@ For ShinpuruNodeUI to do anything interesting, it needs a nodeDelegate which is 
 * `nodeSelectedInView(view: SNView, node: SNNode?)` this method is invoked when the user selects a node. In my demo app, it's when I update the controls in the bottom toolbar.
 * `nodeMovedInView(view: SNView, node: SNNode)` this method is invoked when a node is moved. This may be an opportunity to save state.
 * `nodeCreatedInView(view: SNView, position: CGPoint)` this method is invoked when the user long-presses on the background to create a new node. ShinpuruNodeUI isn't responsible for updating the nodes data provider, so this is an opportunity to add a new node to your array.
-* `nodeDeletedInView(view: SNView, node: SNNode)` this method is invoked when the user clicks the trash-can icon. 
-
-Again, because ShinpuruNodeUI is purely responsible for presentation, this is the time to remove that node from your model and recalculate other node values as required. 
-relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int) this method is invoked when the user toggles a relationship between two views and, much like deleting a node, you'll need to recalculate the values of affected nodes.
-defaultNodeSize(view: SNView) -> CGSize returns the size of a newly created node widget to ensure new node widgets are nicely positioned under the user's finger (or maybe Apple Pencil)
+* `nodeDeletedInView(view: SNView, node: SNNode)` this method is invoked when the user clicks the trash-can icon. Again, because ShinpuruNodeUI is purely responsible for presentation, this is the time to remove that node from your model and recalculate other node values as required. 
+* `relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)` this method is invoked when the user toggles a relationship between two views and, much like deleting a node, you'll need to recalculate the values of affected nodes.
+* `defaultNodeSize(view: SNView) -> CGSize` returns the size of a newly created node widget to ensure new node widgets are nicely positioned under the user's finger (or maybe Apple Pencil)
 
 In my demo app, its the view controller that acts as the nodeDelegate.
 
