@@ -63,7 +63,7 @@ protocol SNDelegate: NSObjectProtocol
 
 class SNItemRenderer: UIView
 {
-    var node: SNNode
+    weak var node: SNNode?
     
     required init(node: SNNode)
     {
@@ -87,7 +87,7 @@ class SNItemRenderer: UIView
 
 class SNOutputRowRenderer: UIView
 {
-    var node: SNNode
+    weak var node: SNNode?
     
     required init(node: SNNode)
     {

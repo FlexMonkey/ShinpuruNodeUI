@@ -78,11 +78,6 @@ class DemoInputRowRenderer: SNInputRowRenderer
         
         line.path = linePath.CGPath
     }
-    
-    deinit
-    {
-        print("deinit input renderer")
-    }
 }
 
 // ----
@@ -130,19 +125,24 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
 class DemoRenderer: SNItemRenderer
 {
     let label = UILabel()
+    let line = CAShapeLayer()
     
     override func didMoveToSuperview()
     {
         addSubview(label)
+        layer.addSublayer(line)
         
         label.textColor = UIColor.whiteColor()
         label.numberOfLines = 2
         label.textAlignment = NSTextAlignment.Center
         
+        line.strokeColor = UIColor.whiteColor().CGColor
+        line.lineWidth = 1
+        
         updateLabel()
     }
     
-    override var node: SNNode
+    override var node: SNNode?
     {
         didSet
         {
@@ -157,7 +157,7 @@ class DemoRenderer: SNItemRenderer
     
     func updateLabel()
     {
-        if let value = node.demoNode?.value, type = node.demoNode?.type
+        if let value = node?.demoNode?.value, type = node?.demoNode?.type
         {
             backgroundColor = type.isOperator ? UIColor.blueColor() : UIColor.redColor()
             
@@ -172,6 +172,12 @@ class DemoRenderer: SNItemRenderer
     override func layoutSubviews()
     {
         label.frame = bounds
+        
+        let linePath = UIBezierPath()
+        linePath.moveToPoint(CGPoint(x: 0, y: 0))
+        linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+        
+        line.path = linePath.CGPath
     }
     
     override func intrinsicContentSize() -> CGSize

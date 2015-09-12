@@ -118,10 +118,6 @@ class SNView: UIScrollView
             
             widgetsDictionary.removeValueForKey(node)
             
-            widget.inputRowRenderers.forEach{ $0.node = nil;  $0.removeFromSuperview() }
-            
-            widget.inputRowRenderers.removeAll()
-            
             widget.removeFromSuperview()
             
             for otherNode in nodes where otherNode != node && otherNode.inputs != nil
@@ -132,8 +128,6 @@ class SNView: UIScrollView
                     otherNodeInputRenderer.reload()
                 }
             }
-            
-            
         }
         
         nodeDelegate?.nodeDeletedInView(self, node: node)

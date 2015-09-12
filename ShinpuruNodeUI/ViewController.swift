@@ -70,7 +70,6 @@ class ViewController: UIViewController
         
         // toolbar stak view
         controlsStackView.distribution = UIStackViewDistribution.Fill
-        controlsStackView.spacing = 10
         
         controlsStackView.addArrangedSubview(slider)
         controlsStackView.addArrangedSubview(isOperatorSwitch)

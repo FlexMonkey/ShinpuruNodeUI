@@ -234,7 +234,7 @@ class SNWidgetTitleBar: UIToolbar
 {
     let label: UIBarButtonItem
     
-    var parentNodeWidget: SNNodeWidget?
+    weak var parentNodeWidget: SNNodeWidget?
     
     var title: String = ""
     {
@@ -268,10 +268,4 @@ class SNWidgetTitleBar: UIToolbar
     {
         fatalError("init(coder:) has not been implemented")
     }
- 
-    deinit
-    {
-        print("DELETE NODE!!!")
-    }
-    
 }
