@@ -23,7 +23,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
         layer.addSublayer(line)
   
         line.strokeColor = UIColor.whiteColor().CGColor
-        line.lineWidth = 2
+        line.lineWidth = 1
     }
     
     override var node: SNNode?

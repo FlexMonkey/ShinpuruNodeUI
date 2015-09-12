@@ -12,7 +12,7 @@ class SNView: UIScrollView
 {
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
     private let curvesLayer = SNRelationshipCurvesLayer()
-    private let nodesView = UIView(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
+    private let nodesContainer = SNNodesContainer(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
 
     var nodes: [SNNode]?
     {
@@ -31,7 +31,7 @@ class SNView: UIScrollView
     {
         didSet
         {
-            nodesView.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            nodesContainer.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
         }
     }
     
@@ -62,22 +62,24 @@ class SNView: UIScrollView
     override func didMoveToSuperview()
     {
         backgroundColor = UIColor.blackColor()
+  
+        nodesContainer.layer.addSublayer(curvesLayer)
         
-        layer.addSublayer(curvesLayer)
-        
-        addSubview(nodesView)
+        addSubview(nodesContainer)
         
         renderNodes()
         
         let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
-        nodesView.addGestureRecognizer(longPress)
+        nodesContainer.addGestureRecognizer(longPress)
     }
+    
+
     
     func longPressHandler(recognizer: UILongPressGestureRecognizer)
     {
         if recognizer.state == UIGestureRecognizerState.Began
         {
-            nodeDelegate?.nodeCreatedInView(self, position: recognizer.locationInView(nodesView))
+            nodeDelegate?.nodeCreatedInView(self, position: recognizer.locationInView(nodesContainer))
         }
     }
     
@@ -166,7 +168,9 @@ class SNView: UIScrollView
             
             widgetsDictionary[node] = widget
             
-            nodesView.addSubview(widget)
+            nodesContainer.addSubview(widget)
+            
+            nodesContainer.bringSubviewToFront(widget)
             
             return widget
         }
