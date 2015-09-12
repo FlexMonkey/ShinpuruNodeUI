@@ -70,6 +70,9 @@ class ViewController: UIViewController
         
         // toolbar stak view
         controlsStackView.distribution = UIStackViewDistribution.Fill
+        controlsStackView.spacing = 10
+        
+        viewDidLayoutSubviews()
         
         controlsStackView.addArrangedSubview(slider)
         controlsStackView.addArrangedSubview(isOperatorSwitch)
@@ -208,6 +211,8 @@ extension ViewController: SNDelegate
         let newNode = demoModel.addNodeAt(position)
         
         view.reloadNode(newNode)
+        
+        view.selectedNode = newNode
     }
     
     func nodeDeletedInView(view: SNView, node: SNNode)

@@ -28,7 +28,7 @@ class DemoNode: SNNode
     }
     
     var value: DemoNodeValue?
-    
+
     required init(name: String, position: CGPoint)
     {
         super.init(name: name, position: position)
