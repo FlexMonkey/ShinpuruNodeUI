@@ -38,9 +38,9 @@ ShinpuruNodeUI is manually installed and requires you to copy the following file
 * `SNRelationshipCurvesLayer` The CAShapeLayer that renders the relationship curves
 * `SNView` The main ShinpuruNodeUI component 
 * `ShinpuruNodeDataTypes` Contains supporting classes and protocols: 
-* `SNNode` A node data type
-* `SNDelegate` The delegate protocol 
-* `SNItemRenderer`, `SNOutputRowRenderer`, `SNInputRowRenderer` base classes for renderers that you can extend for your own implementation 
+  * `SNNode` A node data type
+  * `SNDelegate` The delegate protocol 
+  * `SNItemRenderer`, `SNOutputRowRenderer`, `SNInputRowRenderer` base classes for renderers that you can extend for your own implementation 
 
 This is bound to change as the component evolves and I'll keep the read-me file updated.
 
