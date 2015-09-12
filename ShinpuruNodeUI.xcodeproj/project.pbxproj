@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		059C3E5D1BA3E476003B740B /* SNNodesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059C3E5C1BA3E476003B740B /* SNNodesContainer.swift */; settings = {ASSET_TAGS = (); }; };
+		059C3E691BA46655003B740B /* node_ui.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 059C3E681BA46655003B740B /* node_ui.jpeg */; settings = {ASSET_TAGS = (); }; };
 		3E7C176B1B957B0F000DC1E4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C176A1B957B0F000DC1E4 /* AppDelegate.swift */; };
 		3E7C176D1B957B0F000DC1E4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7C176C1B957B0F000DC1E4 /* ViewController.swift */; };
 		3E7C17701B957B0F000DC1E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E7C176E1B957B0F000DC1E4 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		059C3E5C1BA3E476003B740B /* SNNodesContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SNNodesContainer.swift; path = shinpuru/SNNodesContainer.swift; sourceTree = "<group>"; };
+		059C3E681BA46655003B740B /* node_ui.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = node_ui.jpeg; path = assets/node_ui.jpeg; sourceTree = "<group>"; };
 		3E7C17671B957B0F000DC1E4 /* ShinpuruNodeUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShinpuruNodeUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E7C176A1B957B0F000DC1E4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E7C176C1B957B0F000DC1E4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -90,6 +92,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		059C3E671BA465ED003B740B /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				059C3E681BA46655003B740B /* node_ui.jpeg */,
+			);
+			name = assets;
+			sourceTree = "<group>";
+		};
 		3E7C175E1B957B0F000DC1E4 = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +123,7 @@
 		3E7C17691B957B0F000DC1E4 /* ShinpuruNodeUI */ = {
 			isa = PBXGroup;
 			children = (
+				059C3E671BA465ED003B740B /* assets */,
 				3EE37A151B961DFC00F87EE1 /* demoProject */,
 				3E7C17981B957B19000DC1E4 /* shinpuru */,
 				3E7C176A1B957B0F000DC1E4 /* AppDelegate.swift */,
@@ -271,6 +282,7 @@
 				3E7C17751B957B0F000DC1E4 /* LaunchScreen.storyboard in Resources */,
 				3E7C17721B957B0F000DC1E4 /* Assets.xcassets in Resources */,
 				3E7C17701B957B0F000DC1E4 /* Main.storyboard in Resources */,
+				059C3E691BA46655003B740B /* node_ui.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
