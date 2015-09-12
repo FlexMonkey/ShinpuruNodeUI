@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SNView: UIScrollView
+class SNView: UIScrollView, UIScrollViewDelegate
 {
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
     private let curvesLayer = SNRelationshipCurvesLayer()
@@ -61,6 +61,10 @@ class SNView: UIScrollView
     
     override func didMoveToSuperview()
     {
+        minimumZoomScale = 0.5
+        maximumZoomScale = 2.0
+        delegate = self
+        
         backgroundColor = UIColor.blackColor()
   
         nodesContainer.layer.addSublayer(curvesLayer)
@@ -203,6 +207,11 @@ class SNView: UIScrollView
         {
             curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary)
         }
+    }
+    
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView?
+    {
+        return nodesContainer
     }
     
     override func layoutSubviews()
