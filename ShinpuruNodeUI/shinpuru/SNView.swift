@@ -114,9 +114,15 @@ class SNView: UIScrollView
         if let widget = widgetsDictionary[node],
             nodes = nodes
         {
-            widget.removeFromSuperview()
+            selectedNode = nil
             
             widgetsDictionary.removeValueForKey(node)
+            
+            widget.inputRowRenderers.forEach{ $0.node = nil;  $0.removeFromSuperview() }
+            
+            widget.inputRowRenderers.removeAll()
+            
+            widget.removeFromSuperview()
             
             for otherNode in nodes where otherNode != node && otherNode.inputs != nil
             {
@@ -127,7 +133,7 @@ class SNView: UIScrollView
                 }
             }
             
-            selectedNode = nil
+            
         }
         
         nodeDelegate?.nodeDeletedInView(self, node: node)

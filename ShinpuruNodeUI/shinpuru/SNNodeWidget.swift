@@ -12,8 +12,8 @@ class SNNodeWidget: UIView
 {
     static let titleBarHeight: CGFloat = 44
     
-    let view: SNView
-    let node: SNNode
+    unowned let view: SNView
+    unowned let node: SNNode
     var inputRowRenderers = [SNInputRowRenderer]()
     var previousPanPoint: CGPoint?
     
@@ -269,6 +269,9 @@ class SNWidgetTitleBar: UIToolbar
         fatalError("init(coder:) has not been implemented")
     }
  
-    
+    deinit
+    {
+        print("DELETE NODE!!!")
+    }
     
 }

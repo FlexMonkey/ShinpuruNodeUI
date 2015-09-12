@@ -78,6 +78,11 @@ class DemoInputRowRenderer: SNInputRowRenderer
         
         line.path = linePath.CGPath
     }
+    
+    deinit
+    {
+        print("deinit input renderer")
+    }
 }
 
 // ----

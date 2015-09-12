@@ -107,7 +107,7 @@ class SNOutputRowRenderer: UIView
 class SNInputRowRenderer: UIView
 {
     var index: Int
-    var node: SNNode?
+    weak var node: SNNode?
     
     required init(index: Int, node: SNNode?)
     {
