@@ -22,6 +22,7 @@ import UIKit
 
 class DemoNode: SNNode
 {
+    // the function or operator of the node
     var type: DemoNodeType = DemoNodeType.Numeric
     {
         didSet
@@ -63,7 +64,7 @@ class DemoNode: SNNode
         self.inputs = inputs
     }
     
-    override var inputSlots: Int
+    override var numInputSlots: Int
     {
         set
         {
@@ -71,38 +72,61 @@ class DemoNode: SNNode
         }
         get
         {
-            return type.inputSlots
+            return type.numInputSlots
+        }
+    }
+    
+    var outputType: DemoNodeValue
+    {
+        switch type
+        {
+        case .Add, .Subtract, .Multiply, .Divide, .Numeric:
+            return DemoNodeValue.numberType()
+
+        case .Color, .ColorAdjust:
+            return DemoNodeValue.colorType()
         }
     }
     
     func recalculate()
     {
-        let floatValue: Float
-        
         switch type
         {
         case .Add:
-            floatValue = getInputValueAt(0).floatValue + getInputValueAt(1).floatValue + getInputValueAt(2).floatValue + getInputValueAt(3).floatValue
+            value = DemoNodeValue.Number(getInputValueAt(0).floatValue +
+                getInputValueAt(1).floatValue +
+                getInputValueAt(2).floatValue)
             
         case .Subtract:
-            floatValue = getInputValueAt(0).floatValue - getInputValueAt(1).floatValue
+            value = DemoNodeValue.Number(getInputValueAt(0).floatValue - getInputValueAt(1).floatValue)
             
         case .Multiply:
-            floatValue = getInputValueAt(0).floatValue * getInputValueAt(1).floatValue
+            value = DemoNodeValue.Number(getInputValueAt(0).floatValue * getInputValueAt(1).floatValue)
             
         case .Divide:
-            floatValue = getInputValueAt(0).floatValue / getInputValueAt(1).floatValue
+            value = DemoNodeValue.Number(getInputValueAt(0).floatValue / getInputValueAt(1).floatValue)
             
         case .Numeric:
-            floatValue = value?.floatValue ?? Float(0)
+            value = DemoNodeValue.Number(value?.floatValue ?? Float(0))
+            
+        case .Color:
+            let red = getInputValueAt(0).floatValue / 10
+            let green = getInputValueAt(1).floatValue / 10
+            let blue = getInputValueAt(2).floatValue / 10
+            
+            let colorValue = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
+            
+            value = DemoNodeValue.Color(colorValue)
+            
+        case .ColorAdjust:
+
+            value = DemoNodeValue.Color(getInputValueAt(0).colorValue.multiply(getInputValueAt(1).floatValue))
         }
         
-        if let inputs = inputs where inputs.count >= type.inputSlots && type.inputSlots > 0
+        if let inputs = inputs where inputs.count >= type.numInputSlots && type.numInputSlots > 0
         {
-            self.inputs = Array(inputs[0 ... type.inputSlots - 1])
+            self.inputs = Array(inputs[0 ... type.numInputSlots - 1])
         }
-        
-        value = DemoNodeValue.Number(floatValue)
     }
     
     func getInputValueAt(index: Int) -> DemoNodeValue
@@ -119,6 +143,11 @@ class DemoNode: SNNode
         {
             return DemoNodeValue.Number(0)
         }
+    }
+    
+    deinit
+    {
+        print("** DemoNode deinit")
     }
 }
 
@@ -139,19 +168,41 @@ enum DemoNodeType: String
     case Multiply
     case Divide
     
-    static let operators = [Add, Subtract, Multiply, Divide]
+    case Color
+    case ColorAdjust
     
-    var inputSlots: Int
+    static let operators = [Add, Subtract, Multiply, Divide, Color, ColorAdjust]
+    
+    var inputSlots: [DemoNodeInputSlot]
     {
         switch self
         {
         case .Numeric:
-            return 0
+            return []
+            
         case .Add:
-            return 4
+            return [DemoNodeInputSlot(label: "x", type: DemoNodeValue.numberType()),
+                DemoNodeInputSlot(label: "y", type: DemoNodeValue.numberType()),
+                DemoNodeInputSlot(label: "z", type: DemoNodeValue.numberType())]
+        
         case .Subtract, .Multiply, .Divide:
-            return 2
+            return [DemoNodeInputSlot(label: "x", type: DemoNodeValue.numberType()),
+                DemoNodeInputSlot(label: "y", type: DemoNodeValue.numberType())]
+        
+        case .Color:
+            return [DemoNodeInputSlot(label: "red", type: DemoNodeValue.numberType()),
+                DemoNodeInputSlot(label: "green", type: DemoNodeValue.numberType()),
+                DemoNodeInputSlot(label: "blue", type: DemoNodeValue.numberType())]
+            
+        case .ColorAdjust:
+            return [DemoNodeInputSlot(label: "Color", type: DemoNodeValue.colorType()),
+                DemoNodeInputSlot(label: "Value", type: DemoNodeValue.numberType())]
         }
+    }
+    
+    var numInputSlots: Int
+    {
+        return inputSlots.count
     }
     
     var isOperator: Bool
@@ -160,18 +211,67 @@ enum DemoNodeType: String
     }
 }
 
+struct DemoNodeInputSlot
+{
+    let label: String
+    let type: DemoNodeValue
+}
+
 enum DemoNodeValue
 {
-    case Number(Float)
+    case Number(Float?)
+    case Color(UIColor?)
 
+    // empty values for type matching
+    
+    static func numberType() -> DemoNodeValue
+    {
+        return DemoNodeValue.Number(nil)
+    }
+    
+    static func colorType() -> DemoNodeValue
+    {
+        return DemoNodeValue.Color(nil)
+    }
+    
+    // get non-optional associated value
+    
     var floatValue: Float
     {
         switch self
         {
         case .Number(let value):
-            return value
+            return value ?? 0
+        default:
+            return 0
         }
     }
+    
+    var colorValue: UIColor
+    {
+        switch self
+        {
+        case .Color(let value):
+            return value ?? UIColor.whiteColor()
+            
+        default:
+            return UIColor.whiteColor()
+        }
+    }
+    
+    // return the type name
+    
+    var typeName: String
+    {
+        switch self
+        {
+        case .Number:
+            return "Number"
+        case .Color:
+            return "Color"
+        }
+    }
+
 }
 
 

@@ -26,7 +26,7 @@ class SNNode: Equatable, Hashable
 {
     let uuid  = NSUUID()
     
-    var inputSlots: Int = 0
+    var numInputSlots: Int = 0
     var inputs: [SNNode?]?
     var position: CGPoint
     var name: String
@@ -56,7 +56,7 @@ protocol SNDelegate: NSObjectProtocol
     
     func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
     
-    func inputRowRendererForView(view: SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
     
     func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
     
@@ -71,6 +71,8 @@ protocol SNDelegate: NSObjectProtocol
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     
     func defaultNodeSize(view: SNView) -> CGSize
+    
+    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool // New! Add to GitHub readme
 }
 
 /// Base class for node item renderer
@@ -126,12 +128,15 @@ class SNOutputRowRenderer: UIView
 class SNInputRowRenderer: UIView
 {
     var index: Int
-    weak var node: SNNode?
     
-    required init(index: Int, node: SNNode?)
+    unowned let parentNode: SNNode
+    weak var inputNode: SNNode?
+    
+    required init(index: Int, inputNode: SNNode?, parentNode: SNNode)
     {
         self.index = index
-        self.node = node
+        self.inputNode = inputNode
+        self.parentNode = parentNode
         
         super.init(frame: CGRectZero)
     }

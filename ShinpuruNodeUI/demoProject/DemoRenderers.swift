@@ -36,13 +36,15 @@ class DemoInputRowRenderer: SNInputRowRenderer
   
         line.strokeColor = UIColor.whiteColor().CGColor
         line.lineWidth = 1
+        
+        reload()
     }
     
-    override var node: SNNode?
+    override var inputNode: SNNode?
     {
         didSet
         {
-            super.node = node
+            super.inputNode = inputNode
             
             updateLabel()
         }
@@ -55,17 +57,24 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     func updateLabel()
     {
-        if let value = node?.demoNode?.value, name = node?.name
+        guard index < parentNode.demoNode?.type.inputSlots.count else
+        {
+            return
+        }
+        
+        label.text = parentNode.demoNode?.type.inputSlots[index].label
+        
+        if let value = inputNode?.demoNode?.value
         {
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
-                label.text = "\(name) \(floatValue)"
+                label.text = label.text! + " \(floatValue!)"
+                
+            case DemoNodeValue.Color(let colorValue):
+                label.text = label.text! + " " + colorValue!.getHex()
             }
-        }
-        else
-        {
-           label.text = ""
+            
         }
     }
     
@@ -112,7 +121,7 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
         line.strokeColor = UIColor.whiteColor().CGColor
         line.lineWidth = 1
         
-        label.text = "Output"
+        label.text = node?.demoNode?.outputType.typeName
     }
     
     override func intrinsicContentSize() -> CGSize
@@ -171,12 +180,15 @@ class DemoRenderer: SNItemRenderer
     {
         if let value = node?.demoNode?.value, type = node?.demoNode?.type
         {
-            backgroundColor = type.isOperator ? UIColor.blueColor() : UIColor.redColor()
-            
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
                 label.text = "\(type) \n\(floatValue)"
+                backgroundColor = type.isOperator ? UIColor.blueColor() : UIColor.redColor()
+                
+            case DemoNodeValue.Color(let colorValue):
+                label.text = colorValue?.getHex()
+                backgroundColor = colorValue
             }
         }
     }

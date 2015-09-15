@@ -124,9 +124,10 @@ class SNNodeWidget: UIView
         inputRowRenderers.removeAll()
         var inputOutputRowsHeight: CGFloat = SNNodeWidget.titleBarHeight
         
-        for i in 0 ..< node.inputSlots
+        for i in 0 ..< node.numInputSlots 
         {
-            if let inputRowRenderer = view.nodeDelegate?.inputRowRendererForView(view, node: node, index: i)
+            if let
+                inputRowRenderer = view.nodeDelegate?.inputRowRendererForView(view, inputNode: nil, parentNode: node, index: i)
             {
                 addSubview(inputRowRenderer)
                 inputRowRenderers.append(inputRowRenderer)
@@ -142,7 +143,7 @@ class SNNodeWidget: UIView
                 {
                     if let input = node.inputs?[i]
                     {
-                        inputRowRenderer.node = input
+                        inputRowRenderer.inputNode = input
                         
                         inputRowRenderer.reload()
                     }
@@ -272,5 +273,10 @@ class SNWidgetTitleBar: UIToolbar
     required init?(coder aDecoder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit
+    {
+        print("** NodeWidget deinit")
     }
 }
