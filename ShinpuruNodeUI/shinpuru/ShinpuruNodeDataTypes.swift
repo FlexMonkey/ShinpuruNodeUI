@@ -72,7 +72,7 @@ protocol SNDelegate: NSObjectProtocol
     
     func defaultNodeSize(view: SNView) -> CGSize
     
-    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool // New! Add to GitHub readme
+    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool 
 }
 
 /// Base class for node item renderer
