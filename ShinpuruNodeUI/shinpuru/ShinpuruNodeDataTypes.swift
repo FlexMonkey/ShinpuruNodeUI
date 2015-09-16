@@ -41,6 +41,28 @@ class SNNode: Equatable, Hashable
     {
         return uuid.hashValue
     }
+    
+    func isAscendant(node: SNNode) -> Bool 
+    {
+        guard let inputs = inputs else
+        {
+            return false
+        }
+        
+        for inputNode in inputs
+        {
+            if inputNode == node
+            {
+                return true
+            }
+            else if inputNode != nil && inputNode!.isAscendant(node)
+            {
+                return true
+            }
+        }
+        
+        return false
+    }
 }
 
 func == (lhs: SNNode, rhs: SNNode) -> Bool

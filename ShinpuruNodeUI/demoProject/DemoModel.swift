@@ -118,7 +118,12 @@ struct DemoModel
     
     static func nodesAreRelationshipCandidates(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> Bool
     {
-        // TODO - prevent circular!
+        // TODO - prevent circular! recursive function 
+        
+        if sourceNode.isAscendant(targetNode)
+        {
+            return false
+        }
         
         return sourceNode.value?.typeName == targetNode.type.inputSlots[targetIndex].type.typeName
     }
