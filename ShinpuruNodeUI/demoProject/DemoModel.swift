@@ -120,7 +120,7 @@ struct DemoModel
     {
         // TODO - prevent circular! recursive function 
         
-        if sourceNode.isAscendant(targetNode)
+        if sourceNode.isAscendant(targetNode) || sourceNode == targetNode
         {
             return false
         }

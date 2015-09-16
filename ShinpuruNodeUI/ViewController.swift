@@ -64,8 +64,8 @@ class ViewController: UIViewController
         view.backgroundColor = UIColor.darkGrayColor()
         
         // slider
-        slider.minimumValue = -10
-        slider.maximumValue = 10
+        slider.minimumValue = 0
+        slider.maximumValue = 255
         slider.tintColor = UIColor.whiteColor()
         slider.enabled = false
         

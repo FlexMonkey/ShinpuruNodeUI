@@ -48,7 +48,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
             {
-                for node in nodes where widgetsDictionary[node] != nil && node != selectedNode
+                for node in nodes where widgetsDictionary[node] != nil 
                 {
                     if let widget = widgetsDictionary[node]
                     {
@@ -143,6 +143,8 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             setNeedsLayout()
         }
+        
+        widget.outputRenderer?.reload()
         
         for inputRenderer in widget.inputRowRenderers
         {

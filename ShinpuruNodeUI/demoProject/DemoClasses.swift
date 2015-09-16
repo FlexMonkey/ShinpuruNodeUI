@@ -110,17 +110,19 @@ class DemoNode: SNNode
             value = DemoNodeValue.Number(value?.floatValue ?? Float(0))
             
         case .Color:
-            let red = getInputValueAt(0).floatValue / 10
-            let green = getInputValueAt(1).floatValue / 10
-            let blue = getInputValueAt(2).floatValue / 10
+            let red = getInputValueAt(0).floatValue / 255
+            let green = getInputValueAt(1).floatValue / 255
+            let blue = getInputValueAt(2).floatValue / 255
             
             let colorValue = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
             
             value = DemoNodeValue.Color(colorValue)
             
         case .ColorAdjust:
-
-            value = DemoNodeValue.Color(getInputValueAt(0).colorValue.multiply(getInputValueAt(1).floatValue))
+            let inputColor = getInputValueAt(0).colorValue
+            let inputMultiplier = getInputValueAt(1).floatValue / 255
+            
+            value = DemoNodeValue.Color(inputColor.multiply(inputMultiplier))
         }
         
         if let inputs = inputs
@@ -277,13 +279,15 @@ enum DemoNodeValue
         switch self
         {
         case .Number:
-            return "Number"
+            return SNNumberTypeName
         case .Color:
-            return "Color"
+            return SNColorTypeName
         }
     }
-
 }
+
+let SNNumberTypeName = "Number"
+let SNColorTypeName = "Color"
 
 
 

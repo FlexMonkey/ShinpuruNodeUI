@@ -42,7 +42,7 @@ class SNNode: Equatable, Hashable
         return uuid.hashValue
     }
     
-    func isAscendant(node: SNNode) -> Bool 
+    func isAscendant(node: SNNode) -> Bool // TO DO test long chain
     {
         guard let inputs = inputs else
         {
