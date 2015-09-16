@@ -102,6 +102,8 @@ class ViewController: UIViewController
             selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
+            
+            shinpuruNodeUI.renderRelationships()
         }
     }
     
@@ -126,6 +128,8 @@ class ViewController: UIViewController
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
             
             nodeSelectedInView(shinpuruNodeUI, node: selectedNode)
+            
+            shinpuruNodeUI.renderRelationships()
         }
     }
     
@@ -256,6 +260,6 @@ extension ViewController: SNDelegate
             return false
         }
         
-        return sourceNode.value?.typeName == targetNode.type.inputSlots[targetIndex].type.typeName
+        return DemoModel.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetIndex)
     }
 }

@@ -115,4 +115,11 @@ struct DemoModel
 
         return Array(Set<DemoNode>(updatedDatedNodes.flatMap{ $0 })) //  updatedDatedNodes.flatMap{ $0 }
     }
+    
+    static func nodesAreRelationshipCandidates(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> Bool
+    {
+        // TODO - prevent circular!
+        
+        return sourceNode.value?.typeName == targetNode.type.inputSlots[targetIndex].type.typeName
+    }
 }

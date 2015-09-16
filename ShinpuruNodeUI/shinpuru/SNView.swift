@@ -229,12 +229,15 @@ class SNView: UIScrollView, UIScrollViewDelegate
     
     func toggleRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        guard let sourceNode = selectedNode where relationshipCreationMode else
+        guard let sourceNode = selectedNode, nodeDelegate = nodeDelegate where
+            relationshipCreationMode && nodeDelegate.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
+            else
         {
+            relationshipCreationMode = false
             return
         }
         
-        nodeDelegate?.relationshipToggledInView(self,
+        nodeDelegate.relationshipToggledInView(self,
             sourceNode: sourceNode,
             targetNode: targetNode,
             targetNodeInputIndex: targetNodeInputIndex)

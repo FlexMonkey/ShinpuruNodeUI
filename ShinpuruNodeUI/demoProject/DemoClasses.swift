@@ -123,9 +123,20 @@ class DemoNode: SNNode
             value = DemoNodeValue.Color(getInputValueAt(0).colorValue.multiply(getInputValueAt(1).floatValue))
         }
         
-        if let inputs = inputs where inputs.count >= type.numInputSlots && type.numInputSlots > 0
+        if let inputs = inputs
         {
-            self.inputs = Array(inputs[0 ... type.numInputSlots - 1])
+            if inputs.count >= type.numInputSlots && type.numInputSlots > 0
+            {
+                self.inputs = Array(inputs[0 ... type.numInputSlots - 1])
+            }
+            
+            for (idx, input) in self.inputs!.enumerate() where input?.demoNode != nil
+            {
+                if !DemoModel.nodesAreRelationshipCandidates(input!.demoNode!, targetNode: self, targetIndex: idx)
+                {
+                    self.inputs?[idx] = nil
+                }
+            }
         }
     }
     
