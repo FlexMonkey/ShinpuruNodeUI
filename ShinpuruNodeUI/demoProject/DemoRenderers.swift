@@ -60,12 +60,13 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     func updateLabel()
     {
-        guard index < parentNode.demoNode?.type.inputSlots.count else
+        guard let demoNode = parentNode.demoNode where index < parentNode.demoNode?.type.inputSlots.count else
         {
+            label.text = ""
             return
         }
         
-        label.text = parentNode.demoNode?.type.inputSlots[index].label
+        label.text = demoNode.type.inputSlots[index].label + ": "
         
         if let value = inputNode?.demoNode?.value
         {

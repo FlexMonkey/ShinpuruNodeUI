@@ -36,7 +36,7 @@ class DemoNode: SNNode
                 inputs = nil
             }
         
-            name = type.isOperator ? "operator" : "number"
+            name = type.rawValue
             
             recalculate()
         }
@@ -46,19 +46,19 @@ class DemoNode: SNNode
 
     required init(name: String, position: CGPoint)
     {
-        super.init(name: name, position: position)
+        super.init(name: type.rawValue, position: position)
     }
     
     init(name: String, position: CGPoint, value: DemoNodeValue)
     {
-        super.init(name: name, position: position)
+        super.init(name: type.rawValue, position: position)
         
         self.value = value
     }
     
     init(name: String, position: CGPoint, type: DemoNodeType = DemoNodeType.Numeric, inputs: [SNNode?]? = nil)
     {
-        super.init(name: name, position: position)
+        super.init(name: type.rawValue, position: position)
         
         self.type = type
         self.inputs = inputs
@@ -208,8 +208,8 @@ enum DemoNodeType: String
                 DemoNodeInputSlot(label: "blue", type: DemoNodeValue.numberType())]
             
         case .ColorAdjust:
-            return [DemoNodeInputSlot(label: "Color", type: DemoNodeValue.colorType()),
-                DemoNodeInputSlot(label: "Value", type: DemoNodeValue.numberType())]
+            return [DemoNodeInputSlot(label: "color", type: DemoNodeValue.colorType()),
+                DemoNodeInputSlot(label: "multiplier", type: DemoNodeValue.numberType())]
         }
     }
     
