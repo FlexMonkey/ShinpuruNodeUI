@@ -26,7 +26,7 @@ class SNNode: Equatable, Hashable
 {
     let uuid  = NSUUID()
     
-    var inputSlots: Int = 0
+    var numInputSlots: Int = 0
     var inputs: [SNNode?]?
     var position: CGPoint
     var name: String
@@ -40,6 +40,28 @@ class SNNode: Equatable, Hashable
     var hashValue: Int
     {
         return uuid.hashValue
+    }
+    
+    func isAscendant(node: SNNode) -> Bool // TO DO test long chain
+    {
+        guard let inputs = inputs else
+        {
+            return false
+        }
+        
+        for inputNode in inputs
+        {
+            if inputNode == node
+            {
+                return true
+            }
+            else if inputNode != nil && inputNode!.isAscendant(node)
+            {
+                return true
+            }
+        }
+        
+        return false
     }
 }
 
@@ -56,7 +78,7 @@ protocol SNDelegate: NSObjectProtocol
     
     func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
     
-    func inputRowRendererForView(view: SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
     
     func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
     
@@ -71,6 +93,8 @@ protocol SNDelegate: NSObjectProtocol
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     
     func defaultNodeSize(view: SNView) -> CGSize
+    
+    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool 
 }
 
 /// Base class for node item renderer
@@ -126,12 +150,15 @@ class SNOutputRowRenderer: UIView
 class SNInputRowRenderer: UIView
 {
     var index: Int
-    weak var node: SNNode?
     
-    required init(index: Int, node: SNNode?)
+    unowned let parentNode: SNNode
+    weak var inputNode: SNNode?
+    
+    required init(index: Int, inputNode: SNNode?, parentNode: SNNode)
     {
         self.index = index
-        self.node = node
+        self.inputNode = inputNode
+        self.parentNode = parentNode
         
         super.init(frame: CGRectZero)
     }

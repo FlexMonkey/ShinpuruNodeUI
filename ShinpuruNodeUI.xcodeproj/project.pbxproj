@@ -23,6 +23,7 @@
 		3EE37A1C1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1B1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift */; settings = {ASSET_TAGS = (); }; };
 		3EE37A1E1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1D1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift */; settings = {ASSET_TAGS = (); }; };
 		3EE37A201B97634700F87EE1 /* DemoClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE37A1F1B97634700F87EE1 /* DemoClasses.swift */; settings = {ASSET_TAGS = (); }; };
+		3EF1DC321BA884C90072057E /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF1DC311BA884C90072057E /* UIColorExtension.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		3EE37A1B1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SNRelationshipCurvesLayer.swift; path = shinpuru/SNRelationshipCurvesLayer.swift; sourceTree = "<group>"; };
 		3EE37A1D1B97633B00F87EE1 /* ShinpuruNodeDataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShinpuruNodeDataTypes.swift; path = shinpuru/ShinpuruNodeDataTypes.swift; sourceTree = "<group>"; };
 		3EE37A1F1B97634700F87EE1 /* DemoClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DemoClasses.swift; path = demoProject/DemoClasses.swift; sourceTree = "<group>"; };
+		3EF1DC311BA884C90072057E /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIColorExtension.swift; path = extensions/UIColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 		3E7C17691B957B0F000DC1E4 /* ShinpuruNodeUI */ = {
 			isa = PBXGroup;
 			children = (
+				3EF1DC2E1BA884970072057E /* extensions */,
 				059C3E671BA465ED003B740B /* assets */,
 				3EE37A151B961DFC00F87EE1 /* demoProject */,
 				3E7C17981B957B19000DC1E4 /* shinpuru */,
@@ -174,6 +177,14 @@
 				3EAAA9A41B9D662A0004F869 /* DemoModel.swift */,
 			);
 			name = demoProject;
+			sourceTree = "<group>";
+		};
+		3EF1DC2E1BA884970072057E /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3EF1DC311BA884C90072057E /* UIColorExtension.swift */,
+			);
+			name = extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -315,6 +326,7 @@
 				3E7C176D1B957B0F000DC1E4 /* ViewController.swift in Sources */,
 				3EE37A1C1B9762FA00F87EE1 /* SNRelationshipCurvesLayer.swift in Sources */,
 				3EAAA9A31B996EF20004F869 /* DemoRenderers.swift in Sources */,
+				3EF1DC321BA884C90072057E /* UIColorExtension.swift in Sources */,
 				3E7C176B1B957B0F000DC1E4 /* AppDelegate.swift in Sources */,
 				3E7C179B1B957B93000DC1E4 /* SNView.swift in Sources */,
 			);

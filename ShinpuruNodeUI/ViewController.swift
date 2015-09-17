@@ -64,8 +64,8 @@ class ViewController: UIViewController
         view.backgroundColor = UIColor.darkGrayColor()
         
         // slider
-        slider.minimumValue = -10
-        slider.maximumValue = 10
+        slider.minimumValue = 0
+        slider.maximumValue = 255
         slider.tintColor = UIColor.whiteColor()
         slider.enabled = false
         
@@ -102,6 +102,8 @@ class ViewController: UIViewController
             selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
+            
+            shinpuruNodeUI.renderRelationships()
         }
     }
     
@@ -126,6 +128,8 @@ class ViewController: UIViewController
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
             
             nodeSelectedInView(shinpuruNodeUI, node: selectedNode)
+            
+            shinpuruNodeUI.renderRelationships()
         }
     }
     
@@ -161,9 +165,9 @@ extension ViewController: SNDelegate
         return DemoRenderer(node: node)
     }
     
-    func inputRowRendererForView(view: SNView, node: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
     {
-        return DemoInputRowRenderer(index: index, node: node)
+        return DemoInputRowRenderer(index: index, inputNode: inputNode, parentNode: parentNode)
     }
     
     func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
@@ -192,16 +196,9 @@ extension ViewController: SNDelegate
             operatorsControl.selectedSegmentIndex = -1
             isOperatorSwitch.on = false
             
-            if let nodeValue = node.value
-            {
-                switch nodeValue
-                {
-                case DemoNodeValue.Number(let value):
-                    slider.value = value
-                }
-            }
+            slider.value = node.value?.floatValue ?? 0
             
-        case .Add, .Subtract, .Multiply, .Divide:
+        case .Add, .Subtract, .Multiply, .Divide, .ColorAdjust:
             slider.enabled = false
             operatorsControl.enabled = true
             isOperatorSwitch.on = true
@@ -210,6 +207,10 @@ extension ViewController: SNDelegate
             {
                 operatorsControl.selectedSegmentIndex = targetIndex
             }
+            
+        case .Color:
+            slider.enabled = false
+            operatorsControl.enabled = true
         }
     }
     
@@ -229,7 +230,7 @@ extension ViewController: SNDelegate
     
     func nodeDeletedInView(view: SNView, node: SNNode)
     {
-        if let node = node as? DemoNode
+        if let node = node.demoNode
         {
             demoModel.deleteNode(node).forEach{ view.reloadNode($0) }
             
@@ -239,8 +240,8 @@ extension ViewController: SNDelegate
     
     func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        if let targetNode = targetNode as? DemoNode,
-            sourceNode = sourceNode as? DemoNode
+        if let targetNode = targetNode.demoNode,
+            sourceNode = sourceNode.demoNode
         {
             demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ view.reloadNode($0) }
         }
@@ -249,5 +250,16 @@ extension ViewController: SNDelegate
     func defaultNodeSize(view: SNView) -> CGSize
     {
         return CGSize(width: DemoWidgetWidth, height: DemoWidgetWidth + SNNodeWidget.titleBarHeight * 2)
+    }
+    
+    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool
+    {
+        guard let sourceNode = sourceNode.demoNode,
+            targetNode = targetNode.demoNode else
+        {
+            return false
+        }
+        
+        return DemoModel.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetIndex)
     }
 }

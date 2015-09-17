@@ -24,11 +24,11 @@ struct DemoModel
 {
     var nodes: [DemoNode]
     
-    init()
+    init() 
     {
         let one = DemoNode(name: "One", position: CGPoint(x: 210, y: 10), value: DemoNodeValue.Number(1))
         let two = DemoNode(name: "Two", position: CGPoint(x: 220, y: 350), value: DemoNodeValue.Number(2))
-        let add = DemoNode(name: "Add", position: CGPoint(x: 570, y: 170), type: DemoNodeType.Add, inputs: [one, nil, two, nil])
+        let add = DemoNode(name: "Add", position: CGPoint(x: 570, y: 170), type: DemoNodeType.Add, inputs: [one, two, one])
         
         nodes = [one, two, add]
         
@@ -114,5 +114,17 @@ struct DemoModel
         }
 
         return Array(Set<DemoNode>(updatedDatedNodes.flatMap{ $0 })) //  updatedDatedNodes.flatMap{ $0 }
+    }
+    
+    static func nodesAreRelationshipCandidates(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> Bool
+    {
+        // TODO - prevent circular! recursive function 
+        
+        if sourceNode.isAscendant(targetNode) || sourceNode == targetNode
+        {
+            return false
+        }
+        
+        return sourceNode.value?.typeName == targetNode.type.inputSlots[targetIndex].type.typeName
     }
 }

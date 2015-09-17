@@ -45,6 +45,24 @@ class SNView: UIScrollView, UIScrollViewDelegate
         didSet
         {
             nodesContainer.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            
+            if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
+            {
+                for node in nodes where widgetsDictionary[node] != nil 
+                {
+                    if let widget = widgetsDictionary[node]
+                    {
+                        for (index, inputRowRenderer) in widget.inputRowRenderers.enumerate()
+                        {
+                            let isRelationshipCandidate = nodeDelegate.nodesAreRelationshipCandidates(selectedNode,
+                                targetNode: node,
+                                targetIndex: index)
+                            
+                            inputRowRenderer.alpha = (relationshipCreationMode && !isRelationshipCandidate) ? 0.5 : 1;
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -119,11 +137,18 @@ class SNView: UIScrollView, UIScrollViewDelegate
             return
         }
         
-        if widget.inputRowRenderers.count != node.inputSlots
+        if widget.inputRowRenderers.count != node.numInputSlots
         {
             widget.buildUserInterface()
             
             setNeedsLayout()
+        }
+        
+        widget.outputRenderer?.reload()
+        
+        for inputRenderer in widget.inputRowRenderers
+        {
+            inputRenderer.reload()
         }
         
         widget.titleBar.label.title = node.name
@@ -132,7 +157,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         
         for otherNode in nodes where otherNode != node && otherNode.inputs != nil
         {
-            for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.node == node
+            for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.inputNode == node
             {
                 otherNodeInputRenderer.reload()
             }
@@ -152,9 +177,9 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             for otherNode in nodes where otherNode != node && otherNode.inputs != nil
             {
-                for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.node == node
+                for otherNodeInputRenderer in (widgetsDictionary[otherNode]?.inputRowRenderers)! where otherNodeInputRenderer.inputNode == node
                 {
-                    otherNodeInputRenderer.node = nil
+                    otherNodeInputRenderer.inputNode = nil
                     otherNodeInputRenderer.reload()
                 }
             }
@@ -206,19 +231,22 @@ class SNView: UIScrollView, UIScrollViewDelegate
     
     func toggleRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        guard let sourceNode = selectedNode where relationshipCreationMode else
+        guard let sourceNode = selectedNode, nodeDelegate = nodeDelegate where
+            relationshipCreationMode && nodeDelegate.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
+            else
         {
+            relationshipCreationMode = false
             return
         }
         
-        nodeDelegate?.relationshipToggledInView(self,
+        nodeDelegate.relationshipToggledInView(self,
             sourceNode: sourceNode,
             targetNode: targetNode,
             targetNodeInputIndex: targetNodeInputIndex)
         
         relationshipCreationMode = false
         
-        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].node = targetNode.inputs?[targetNodeInputIndex]
+        widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].inputNode = targetNode.inputs?[targetNodeInputIndex]
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
         reloadNode(targetNode)
