@@ -198,7 +198,7 @@ extension ViewController: SNDelegate
             
             slider.value = node.value?.floatValue ?? 0
             
-        case .Add, .Subtract, .Multiply, .Divide, .ColorAdjust:
+        case .Add, .Subtract, .Multiply, .Divide, .Color, .ColorAdjust:
             slider.enabled = false
             operatorsControl.enabled = true
             isOperatorSwitch.on = true
@@ -207,10 +207,6 @@ extension ViewController: SNDelegate
             {
                 operatorsControl.selectedSegmentIndex = targetIndex
             }
-            
-        case .Color:
-            slider.enabled = false
-            operatorsControl.enabled = true
         }
     }
     
