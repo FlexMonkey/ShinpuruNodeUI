@@ -120,7 +120,7 @@ class DemoNode: SNNode
             
         case .ColorAdjust:
             let inputColor = getInputValueAt(0).colorValue
-            let inputMultiplier = getInputValueAt(1).floatValue / 255
+            let inputMultiplier = CGFloat(getInputValueAt(1).floatValue / 255)
             
             value = DemoNodeValue.Color(inputColor.multiply(inputMultiplier))
         }

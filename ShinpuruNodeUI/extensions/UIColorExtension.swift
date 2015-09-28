@@ -8,91 +8,70 @@
 
 import UIKit
 
+typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
+
 extension UIColor
 {
-    class func colorFromFloats(redComponent redComponent: Float, greenComponent: Float, blueComponent: Float) -> UIColor
+    func multiply(value: CGFloat) -> UIColor
     {
-        return UIColor(red: CGFloat(redComponent), green: CGFloat(greenComponent), blue: CGFloat(blueComponent), alpha: 1.0)
-    }
-    
-    class func colorFromDoubles(redComponent redComponent: Double, greenComponent: Double, blueComponent: Double) -> UIColor
-    {
-        return UIColor(red: CGFloat(redComponent), green: CGFloat(greenComponent), blue: CGFloat(blueComponent), alpha: 1.0)
-    }
-    
-    class func colorFromNSNumbers(redComponent redComponent: NSNumber, greenComponent: NSNumber, blueComponent: NSNumber) -> UIColor
-    {
-        return UIColor(red: CGFloat(redComponent), green: CGFloat(greenComponent), blue: CGFloat(blueComponent), alpha: 1.0)
-    }
-    
-    func multiply(value: Float) -> UIColor
-    {
-        let newRed = CGFloat(getRGB().redComponent * value)
-        let newGreen = CGFloat(getRGB().greenComponent * value)
-        let newBlue = CGFloat(getRGB().blueComponent * value)
+        let newRed = getRGBA().red * value
+        let newGreen = getRGBA().green * value
+        let newBlue = getRGBA().blue * value
         
         return UIColor(red: newRed, green: newGreen, blue: newBlue, alpha: 1.0)
     }
     
-    func getRGB() -> (redComponent: Float, greenComponent: Float, blueComponent: Float)
+    func getRGBA() -> RGBA
     {
+        func zeroIfDodgy(value: CGFloat) -> CGFloat
+        {
+            return isnan(value) || isinf(value) ? 0 : value
+        }
+        
         if CGColorGetNumberOfComponents(self.CGColor) == 4
         {
             let colorRef = CGColorGetComponents(self.CGColor);
             
-            let redComponent = zeroIfDodgy(Float(colorRef[0]))
-            let greenComponent = zeroIfDodgy(Float(colorRef[1]))
-            let blueComponent = zeroIfDodgy(Float(colorRef[2]))
+            let redComponent = zeroIfDodgy(colorRef[0])
+            let greenComponent = zeroIfDodgy(colorRef[1])
+            let blueComponent = zeroIfDodgy(colorRef[2])
+            let alphaComponent = zeroIfDodgy(colorRef[3])
             
-            return (redComponent: redComponent, greenComponent: greenComponent, blueComponent: blueComponent)
+            return RGBA(red: redComponent,
+                green: greenComponent,
+                blue: blueComponent,
+                alpha: alphaComponent)
+        }
+        else if CGColorGetNumberOfComponents(self.CGColor) == 2
+        {
+            let colorRef = CGColorGetComponents(self.CGColor);
+            
+            let greyComponent = zeroIfDodgy(colorRef[0])
+            let alphaComponent = zeroIfDodgy(colorRef[1])
+            
+            return RGBA(red: greyComponent,
+                green: greyComponent,
+                blue: greyComponent,
+                alpha: alphaComponent)
         }
         else
         {
-            return (redComponent: 0, greenComponent: 0, blueComponent: 0)
-        }
-    }
-    
-    func zeroIfDodgy(value: Float) ->Float
-    {
-        if isnan(value) || isinf(value)
-        {
-            return 0
-        }
-        else
-        {
-            return value
+            return RGBA(red: 0,
+                green: 0,
+                blue: 0,
+                alpha: 0)
         }
     }
     
     func getHex() -> String
     {
-        var returnString = ""
+        let rgba = self.getRGBA()
         
-        let rgb = self.getRGB()
-        
-        let red = NSString(format: "%02X", Int(rgb.redComponent * 255))
-        let green = NSString(format: "%02X", Int(rgb.greenComponent * 255))
-        let blue = NSString(format: "%02X", Int(rgb.blueComponent * 255))
+        let red = String(format: "%02X", Int(rgba.red * 255))
+        let green = String(format: "%02X", Int(rgba.green * 255))
+        let blue = String(format: "%02X", Int(rgba.blue * 255))
         
         return (red as String) + (green as String) + (blue as String)
-    }
-    
-    func makeDarker() -> UIColor
-    {
-        let red = getRGB().redComponent * 0.9
-        let green = getRGB().greenComponent * 0.9
-        let blue = getRGB().blueComponent * 0.9
-        
-        return UIColor.colorFromFloats(redComponent: red, greenComponent: green, blueComponent: blue)
-    }
-    
-    func makeLighter() -> UIColor
-    {
-        let red = min(getRGB().redComponent * 1.1, 1.0)
-        let green = min(getRGB().greenComponent * 1.1, 1.0)
-        let blue = min(getRGB().blueComponent * 1.1, 1.0)
-        
-        return UIColor.colorFromFloats(redComponent: red, greenComponent: green, blueComponent: blue)
     }
     
 }
