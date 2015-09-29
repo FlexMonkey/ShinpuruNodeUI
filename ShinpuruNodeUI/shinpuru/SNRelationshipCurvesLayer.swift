@@ -38,14 +38,11 @@ class SNRelationshipCurvesLayer: CALayer
     
     func deleteNodeRelationships(deletedNode: SNNode)
     {
-        for (key, value) in relationshipLayersDictionary
+        for (key, value) in relationshipLayersDictionary where key.sourceNode == deletedNode || key.targetNode == deletedNode
         {
-            if key.sourceNode == deletedNode || key.targetNode == deletedNode
-            {
-                value.removeFromSuperlayer()
-                
-                relationshipLayersDictionary.removeValueForKey(key)
-            }
+            value.removeFromSuperlayer()
+            
+            relationshipLayersDictionary.removeValueForKey(key)
         }
     }
     
@@ -88,10 +85,13 @@ class SNRelationshipCurvesLayer: CALayer
                     guard let targetNode = targetNode,
                         targetWidget = widgetsDictionary[targetNode],
                         targetOutputRow = targetWidget.outputRenderer,
-                        sourceItemRendererHeight = sourceWidget.itemRenderer?.intrinsicContentSize().height else
+                        sourceItemRendererHeight = sourceWidget.itemRenderer?.intrinsicContentSize().height
+                        else
                     {
-                        inputRowsHeight += sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
-                        
+                        if idx < sourceWidget.inputRowRenderers.count
+                        {
+                            inputRowsHeight += sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
+                        }
                         continue
                     }
                     
@@ -116,8 +116,8 @@ class SNRelationshipCurvesLayer: CALayer
                         
                         let relationshipCurvesPath = UIBezierPath()
                         
-                        drawTerminal(relationshipCurvesPath, position: inputPosition)
-                        drawTerminal(relationshipCurvesPath, position: targetPosition)
+                        drawTerminal(relationshipCurvesPath, position: inputPosition.offset(4, dy: 0))
+                        drawTerminal(relationshipCurvesPath, position: targetPosition.offset(-4, dy: 0))
                         
                         relationshipCurvesPath.moveToPoint(targetPosition)
                         relationshipCurvesPath.addCurveToPoint(inputPosition, controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
@@ -144,13 +144,13 @@ class SNRelationshipCurvesLayer: CALayer
             let layer = CAShapeLayer()
             
             layer.strokeColor = UIColor.whiteColor().CGColor
-            layer.lineWidth = 2
+            layer.lineWidth = 4
             layer.fillColor = nil
             layer.lineCap = kCALineCapSquare
             
             relationshipLayersDictionary[nodePair] = layer
             
-            addSublayer(layer); print("created relatioship layer", nodePair.sourceNode.name, nodePair.targetNode.name, nodePair.targetIndex)
+            addSublayer(layer)
         }
         
         return relationshipLayersDictionary[nodePair]!
@@ -163,4 +163,12 @@ class SNRelationshipCurvesLayer: CALayer
         relationshipCurvesPath.appendPath(rect)
     }
     
+}
+
+extension CGPoint
+{
+    func offset(dx: CGFloat, dy: CGFloat) -> CGPoint
+    {
+        return CGPoint(x: x + dx, y: y + dy)
+    }
 }
