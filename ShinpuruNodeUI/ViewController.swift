@@ -230,7 +230,7 @@ extension ViewController: SNDelegate
         {
             demoModel.deleteNode(node).forEach{ view.reloadNode($0) }
             
-            view.renderRelationships()
+            view.renderRelationships(deletedNode: node)
         }
     }
     

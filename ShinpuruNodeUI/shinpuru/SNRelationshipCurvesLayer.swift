@@ -20,41 +20,64 @@
 
 import UIKit
 
-class SNRelationshipCurvesLayer: CAShapeLayer
+class SNRelationshipCurvesLayer: CALayer
 {
-    var relationshipCurvesPath = UIBezierPath()
-        
-    func renderRelationships(nodes: [SNNode], widgetsDictionary: [SNNode: SNNodeWidget])
+    var relationshipLayersDictionary = [SNNodePair: CAShapeLayer]()
+    
+    func deleteSpecificRelationship(sourceNode sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        strokeColor = UIColor.whiteColor().CGColor
-        lineWidth = 2
-        fillColor = nil
-        lineCap = kCALineCapSquare
-        
+        let nodePair = SNNodePair(sourceNode: targetNode, targetNode: sourceNode, targetIndex: targetNodeInputIndex)
+   
+        if let relationshipLayer = relationshipLayersDictionary[nodePair]
+        {
+            relationshipLayer.removeFromSuperlayer()
+            
+            relationshipLayersDictionary.removeValueForKey(nodePair)
+        }
+    }
+    
+    func deleteNodeRelationships(deletedNode: SNNode)
+    {
+        for (key, value) in relationshipLayersDictionary
+        {
+            if key.sourceNode == deletedNode || key.targetNode == deletedNode
+            {
+                value.removeFromSuperlayer()
+                
+                relationshipLayersDictionary.removeValueForKey(key)
+            }
+        }
+    }
+    
+    func renderRelationships(nodes: [SNNode], widgetsDictionary: [SNNode: SNNodeWidget], focussedNode: SNNode? = nil)
+    {
         drawsAsynchronously = true
         
-        relationshipCurvesPath.removeAllPoints()
+        CATransaction.begin()
+        CATransaction.disableActions()
+        CATransaction.setAnimationDuration(0)
+    
+        let sourceNodeTargets: [SNNode]
         
-        for sourceNode in nodes
+        if focussedNode != nil
+        {
+            sourceNodeTargets = nodes.filter
+            {
+                $0.inputs != nil && $0.inputs!.contains({ $0 == focussedNode })
+            }
+        }
+        else
+        {
+            sourceNodeTargets = [SNNode]()
+        }
+        
+        for sourceNode in nodes where focussedNode == nil || sourceNode == focussedNode || sourceNodeTargets.contains(sourceNode)
         {
             guard let sourceWidget = widgetsDictionary[sourceNode] else
             {
                 continue
             }
             
-            let rect = CGRect(x: CGFloat(sourceNode.position.x),
-                y: CGFloat(sourceNode.position.y),
-                width: sourceWidget.intrinsicContentSize().width,
-                height: sourceWidget.intrinsicContentSize().height).insetBy(dx: lineWidth, dy: lineWidth)
-            
-            if rect.isEmpty
-            {
-                continue
-            }
-            
-            let rectPath = UIBezierPath(roundedRect: rect, cornerRadius: 0)
-            relationshipCurvesPath.appendPath(rectPath)
-        
             if let inputs = sourceNode.inputs
             {
                 var inputRowsHeight: CGFloat = 0
@@ -91,6 +114,8 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                         
                         let controlPointTwo = CGPoint(x: inputPosition.x + controlPointHorizontalOffset, y: inputPosition.y)
                         
+                        let relationshipCurvesPath = UIBezierPath()
+                        
                         drawTerminal(relationshipCurvesPath, position: inputPosition)
                         drawTerminal(relationshipCurvesPath, position: targetPosition)
                         
@@ -98,14 +123,38 @@ class SNRelationshipCurvesLayer: CAShapeLayer
                         relationshipCurvesPath.addCurveToPoint(inputPosition, controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
                         
                         inputRowsHeight += rowHeight
+                        
+                        let nodePair = SNNodePair(sourceNode: sourceNode, targetNode: targetNode, targetIndex: idx)
+                        
+                        let layer = layerForNodePair(nodePair)
+                        
+                        layer.path = relationshipCurvesPath.CGPath
                     }
                 }
             }
         }
         
-        path = relationshipCurvesPath.CGPath
+        CATransaction.commit()
     }
     
+    func layerForNodePair(nodePair: SNNodePair) -> CAShapeLayer
+    {
+        if relationshipLayersDictionary[nodePair] == nil
+        {
+            let layer = CAShapeLayer()
+            
+            layer.strokeColor = UIColor.whiteColor().CGColor
+            layer.lineWidth = 2
+            layer.fillColor = nil
+            layer.lineCap = kCALineCapSquare
+            
+            relationshipLayersDictionary[nodePair] = layer
+            
+            addSublayer(layer); print("created relatioship layer", nodePair.sourceNode.name, nodePair.targetNode.name, nodePair.targetIndex)
+        }
+        
+        return relationshipLayersDictionary[nodePair]!
+    }
     
     func drawTerminal(relationshipCurvesPath: UIBezierPath, position: CGPoint)
     {

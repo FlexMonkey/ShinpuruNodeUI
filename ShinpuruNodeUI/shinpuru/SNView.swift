@@ -191,7 +191,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
     func nodeMoved(node: SNNode)
     {
         nodeDelegate?.nodeMovedInView(self, node: node)
-        renderRelationships()
+        renderRelationships(focussedNode: node)
     }
     
     func renderNodes()
@@ -250,14 +250,29 @@ class SNView: UIScrollView, UIScrollViewDelegate
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
         reloadNode(targetNode)
-        renderRelationships()
+
+        if  targetNode.inputs?[targetNodeInputIndex] == sourceNode
+        {
+            renderRelationships(focussedNode: sourceNode)
+        }
+        else
+        {
+            curvesLayer.deleteSpecificRelationship(sourceNode: sourceNode,
+                targetNode: targetNode,
+                targetNodeInputIndex: targetNodeInputIndex)
+        }
     }
     
-    func renderRelationships()
+    func renderRelationships(deletedNode deletedNode: SNNode)
+    {
+        curvesLayer.deleteNodeRelationships(deletedNode)
+    }
+    
+    func renderRelationships(focussedNode focussedNode: SNNode? = nil)
     {
         if let nodes = nodes
         {
-            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary)
+            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary, focussedNode: focussedNode)
         }
     }
     

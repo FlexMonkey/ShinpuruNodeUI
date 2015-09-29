@@ -70,6 +70,25 @@ func == (lhs: SNNode, rhs: SNNode) -> Bool
     return lhs.uuid.isEqual(rhs.uuid)
 }
 
+/// Node Pair - used as a dictionary key in relationship curves layer
+
+struct SNNodePair: Equatable, Hashable
+{
+    let sourceNode: SNNode
+    let targetNode: SNNode
+    let targetIndex: Int
+    
+    var hashValue: Int
+    {
+        return sourceNode.uuid.hashValue + targetNode.uuid.hashValue + targetIndex.hashValue
+    }
+}
+
+func == (lhs: SNNodePair, rhs: SNNodePair) -> Bool
+{
+    return lhs.sourceNode == rhs.sourceNode && lhs.targetNode == rhs.targetNode && lhs.targetIndex == rhs.targetIndex
+}
+
 /// SNView delegate protocol
 
 protocol SNDelegate: NSObjectProtocol
