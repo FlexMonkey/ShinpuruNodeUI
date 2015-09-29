@@ -239,6 +239,14 @@ class SNView: UIScrollView, UIScrollViewDelegate
             return
         }
         
+        if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
+            existingRelationshipNode != sourceNode
+        {
+            curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
+                targetNode: targetNode,
+                targetNodeInputIndex: targetNodeInputIndex)
+        }
+        
         nodeDelegate.relationshipToggledInView(self,
             sourceNode: sourceNode,
             targetNode: targetNode,
