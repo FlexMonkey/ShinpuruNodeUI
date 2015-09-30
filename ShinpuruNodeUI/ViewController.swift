@@ -103,7 +103,8 @@ class ViewController: UIViewController
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
             
-            shinpuruNodeUI.renderRelationships()
+            
+            shinpuruNodeUI.renderRelationships(inputsChangedNodes: selectedNode)
         }
     }
     
@@ -129,7 +130,7 @@ class ViewController: UIViewController
             
             nodeSelectedInView(shinpuruNodeUI, node: selectedNode)
             
-            shinpuruNodeUI.renderRelationships()
+            shinpuruNodeUI.renderRelationships(inputsChangedNodes: selectedNode)
         }
     }
     

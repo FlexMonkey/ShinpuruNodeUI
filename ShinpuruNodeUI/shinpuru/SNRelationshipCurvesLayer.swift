@@ -119,8 +119,8 @@ class SNRelationshipCurvesLayer: CALayer
                         drawTerminal(relationshipCurvesPath, position: inputPosition.offset(4, dy: 0))
                         drawTerminal(relationshipCurvesPath, position: targetPosition.offset(-4, dy: 0))
                         
-                        relationshipCurvesPath.moveToPoint(targetPosition)
-                        relationshipCurvesPath.addCurveToPoint(inputPosition, controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
+                        relationshipCurvesPath.moveToPoint(targetPosition.offset(-4, dy: 0))
+                        relationshipCurvesPath.addCurveToPoint(inputPosition.offset(4, dy: 0), controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
                         
                         inputRowsHeight += rowHeight
                         
@@ -147,6 +147,11 @@ class SNRelationshipCurvesLayer: CALayer
             layer.lineWidth = 4
             layer.fillColor = nil
             layer.lineCap = kCALineCapSquare
+            
+            layer.shadowColor = UIColor.blackColor().CGColor
+            layer.shadowOffset = CGSizeZero
+            layer.shadowRadius = 2
+            layer.shadowOpacity = 1
             
             relationshipLayersDictionary[nodePair] = layer
             

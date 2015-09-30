@@ -239,12 +239,15 @@ class SNView: UIScrollView, UIScrollViewDelegate
             return
         }
         
-        if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
-            existingRelationshipNode != sourceNode
+        if targetNode.inputs != nil && targetNodeInputIndex < targetNode.inputs?.count
         {
-            curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
-                targetNode: targetNode,
-                targetNodeInputIndex: targetNodeInputIndex)
+            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
+                existingRelationshipNode != sourceNode
+            {
+                curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
+                    targetNode: targetNode,
+                    targetNodeInputIndex: targetNodeInputIndex)
+            }
         }
         
         nodeDelegate.relationshipToggledInView(self,
@@ -269,6 +272,12 @@ class SNView: UIScrollView, UIScrollViewDelegate
                 targetNode: targetNode,
                 targetNodeInputIndex: targetNodeInputIndex)
         }
+    }
+    
+    func renderRelationships(inputsChangedNodes inputsChangedNodes: SNNode)
+    {
+        renderRelationships(deletedNode: inputsChangedNodes)
+        renderRelationships(focussedNode: inputsChangedNodes)
     }
     
     func renderRelationships(deletedNode deletedNode: SNNode)
