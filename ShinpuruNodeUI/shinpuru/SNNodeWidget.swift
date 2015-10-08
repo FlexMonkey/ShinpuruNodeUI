@@ -201,8 +201,10 @@ class SNNodeWidget: UIView
         {
             view.toggleRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
         }
-        
-        view.selectedNode = node
+        else
+        {
+            view.selectedNode = node
+        }
     }
     
     func deleteHandler()

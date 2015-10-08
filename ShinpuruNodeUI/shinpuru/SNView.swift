@@ -51,8 +51,6 @@ class SNView: UIScrollView, UIScrollViewDelegate
                 self.nodesContainer.backgroundColor = self.relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
             }
             
-            
-            
             if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
             {
                 for node in nodes where widgetsDictionary[node] != nil 
