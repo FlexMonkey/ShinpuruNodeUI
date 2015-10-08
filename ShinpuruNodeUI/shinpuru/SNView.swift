@@ -21,6 +21,8 @@
 
 import UIKit
 
+let SNViewAnimationDuration = 0.2
+
 class SNView: UIScrollView, UIScrollViewDelegate
 {
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
@@ -44,7 +46,12 @@ class SNView: UIScrollView, UIScrollViewDelegate
     {
         didSet
         {
-            nodesContainer.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            UIView.animateWithDuration(SNViewAnimationDuration)
+            {
+                self.nodesContainer.backgroundColor = self.relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            }
+            
+            
             
             if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
             {
