@@ -103,7 +103,8 @@ class ViewController: UIViewController
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
             
-            shinpuruNodeUI.renderRelationships()
+            
+            shinpuruNodeUI.renderRelationships(inputsChangedNodes: selectedNode)
         }
     }
     
@@ -129,7 +130,7 @@ class ViewController: UIViewController
             
             nodeSelectedInView(shinpuruNodeUI, node: selectedNode)
             
-            shinpuruNodeUI.renderRelationships()
+            shinpuruNodeUI.renderRelationships(inputsChangedNodes: selectedNode)
         }
     }
     
@@ -198,7 +199,7 @@ extension ViewController: SNDelegate
             
             slider.value = node.value?.floatValue ?? 0
             
-        case .Add, .Subtract, .Multiply, .Divide, .ColorAdjust:
+        case .Add, .Subtract, .Multiply, .Divide, .Color, .ColorAdjust:
             slider.enabled = false
             operatorsControl.enabled = true
             isOperatorSwitch.on = true
@@ -207,10 +208,6 @@ extension ViewController: SNDelegate
             {
                 operatorsControl.selectedSegmentIndex = targetIndex
             }
-            
-        case .Color:
-            slider.enabled = false
-            operatorsControl.enabled = true
         }
     }
     
@@ -234,7 +231,7 @@ extension ViewController: SNDelegate
         {
             demoModel.deleteNode(node).forEach{ view.reloadNode($0) }
             
-            view.renderRelationships()
+            view.renderRelationships(deletedNode: node)
         }
     }
     

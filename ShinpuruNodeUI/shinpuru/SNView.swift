@@ -21,6 +21,8 @@
 
 import UIKit
 
+let SNViewAnimationDuration = 0.2
+
 class SNView: UIScrollView, UIScrollViewDelegate
 {
     private var widgetsDictionary = [SNNode: SNNodeWidget]()
@@ -44,7 +46,10 @@ class SNView: UIScrollView, UIScrollViewDelegate
     {
         didSet
         {
-            nodesContainer.backgroundColor = relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            UIView.animateWithDuration(SNViewAnimationDuration)
+            {
+                self.nodesContainer.backgroundColor = self.relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
+            }
             
             if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
             {
@@ -191,7 +196,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
     func nodeMoved(node: SNNode)
     {
         nodeDelegate?.nodeMovedInView(self, node: node)
-        renderRelationships()
+        renderRelationships(focussedNode: node)
     }
     
     func renderNodes()
@@ -239,6 +244,17 @@ class SNView: UIScrollView, UIScrollViewDelegate
             return
         }
         
+        if targetNode.inputs != nil && targetNodeInputIndex < targetNode.inputs?.count
+        {
+            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
+                existingRelationshipNode != sourceNode
+            {
+                curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
+                    targetNode: targetNode,
+                    targetNodeInputIndex: targetNodeInputIndex)
+            }
+        }
+        
         nodeDelegate.relationshipToggledInView(self,
             sourceNode: sourceNode,
             targetNode: targetNode,
@@ -250,14 +266,35 @@ class SNView: UIScrollView, UIScrollViewDelegate
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
         reloadNode(targetNode)
-        renderRelationships()
+
+        if  targetNode.inputs?[targetNodeInputIndex] == sourceNode
+        {
+            renderRelationships(focussedNode: sourceNode)
+        }
+        else
+        {
+            curvesLayer.deleteSpecificRelationship(sourceNode: sourceNode,
+                targetNode: targetNode,
+                targetNodeInputIndex: targetNodeInputIndex)
+        }
     }
     
-    func renderRelationships()
+    func renderRelationships(inputsChangedNodes inputsChangedNodes: SNNode)
+    {
+        renderRelationships(deletedNode: inputsChangedNodes)
+        renderRelationships(focussedNode: inputsChangedNodes)
+    }
+    
+    func renderRelationships(deletedNode deletedNode: SNNode)
+    {
+        curvesLayer.deleteNodeRelationships(deletedNode)
+    }
+    
+    func renderRelationships(focussedNode focussedNode: SNNode? = nil)
     {
         if let nodes = nodes
         {
-            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary)
+            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary, focussedNode: focussedNode)
         }
     }
     

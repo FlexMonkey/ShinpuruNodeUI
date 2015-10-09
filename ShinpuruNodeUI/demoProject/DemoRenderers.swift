@@ -225,6 +225,15 @@ class DemoRenderer: SNItemRenderer
                     height: label.intrinsicContentSize().height)
             }
         }
+        else
+        {
+            // TOODO - tidy this up
+            backgroundColor = node?.demoNode?.type == DemoNodeType.Color || node?.demoNode?.type == DemoNodeType.ColorAdjust
+                ? UIColor.purpleColor()
+                : UIColor.blueColor()
+            
+            colorSwatch.alpha = 0
+        }
     }
     
     override func layoutSubviews()

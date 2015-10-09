@@ -48,6 +48,24 @@ class SNNodeWidget: UIView
         
         layer.borderColor = UIColor.whiteColor().CGColor
         layer.borderWidth = 2
+        
+        alpha = 0
+    }
+    
+    override func didMoveToSuperview()
+    {
+        if superview != nil
+        {
+            UIView.animateWithDuration(SNViewAnimationDuration,
+                animations: {self.alpha = 1})
+        }
+    }
+    
+    override func removeFromSuperview()
+    {
+        UIView.animateWithDuration(SNViewAnimationDuration,
+            animations: {self.alpha = 0},
+            completion: {(_) in super.removeFromSuperview()})
     }
 
     required init?(coder aDecoder: NSCoder)
@@ -183,8 +201,10 @@ class SNNodeWidget: UIView
         {
             view.toggleRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
         }
-        
-        view.selectedNode = node
+        else
+        {
+            view.selectedNode = node
+        }
     }
     
     func deleteHandler()
