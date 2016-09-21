@@ -41,10 +41,10 @@ class ViewController: UIViewController
     
     required init?(coder aDecoder: NSCoder)
     {
-        slider = UISlider(frame: CGRectZero)
+        slider = UISlider(frame: .zero)
         operatorsControl = UISegmentedControl(items: DemoNodeType.operators.map{ $0.rawValue })
-        isOperatorSwitch = UISwitch(frame: CGRectZero)
-        controlsStackView = UIStackView(frame: CGRectZero)
+        isOperatorSwitch = UISwitch(frame: .zero)
+        controlsStackView = UIStackView(frame: .zero)
         
         super.init(coder: aDecoder)
 
@@ -61,27 +61,27 @@ class ViewController: UIViewController
     func buildUserInterface()
     {
         view.addSubview(shinpuruNodeUI)
-        view.backgroundColor = UIColor.darkGrayColor()
+        view.backgroundColor = .darkGray
         
         // slider
         slider.minimumValue = 0
         slider.maximumValue = 255
-        slider.tintColor = UIColor.whiteColor()
-        slider.enabled = false
+        slider.tintColor = .white
+        slider.isEnabled = false
         
-        slider.addTarget(self, action: "sliderChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        slider.addTarget(self, action: #selector(ViewController.sliderChangeHandler), for: UIControlEvents.valueChanged)
         
         // operators segmented control
-        operatorsControl.enabled = false
-        operatorsControl.tintColor = UIColor.whiteColor()
-        operatorsControl.addTarget(self, action: "operatorsControlChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        operatorsControl.isEnabled = false
+        operatorsControl.tintColor = .white
+        operatorsControl.addTarget(self, action: #selector(ViewController.operatorsControlChangeHandler), for: UIControlEvents.valueChanged)
         
         // isOperatorSwitch
-        isOperatorSwitch.enabled = false
-        isOperatorSwitch.addTarget(self, action: "isOperatorSwitchChangeHandler", forControlEvents: UIControlEvents.ValueChanged)
+        isOperatorSwitch.isEnabled = false
+        isOperatorSwitch.addTarget(self, action: #selector(ViewController.isOperatorSwitchChangeHandler), for: UIControlEvents.valueChanged)
         
         // toolbar stack view
-        controlsStackView.distribution = UIStackViewDistribution.Fill
+        controlsStackView.distribution = .fill
         controlsStackView.spacing = 10
         
         viewDidLayoutSubviews()
@@ -97,7 +97,7 @@ class ViewController: UIViewController
     
     func operatorsControlChangeHandler()
     {
-        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type.isOperator
+        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode , selectedNode.type.isOperator
         {
             selectedNode.type = DemoNodeType.operators[operatorsControl.selectedSegmentIndex]
             
@@ -110,9 +110,9 @@ class ViewController: UIViewController
     
     func sliderChangeHandler()
     {
-        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode where selectedNode.type == .Numeric
+        if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode , selectedNode.type == .Numeric
         {
-            selectedNode.value = DemoNodeValue.Number(round(slider.value))
+            selectedNode.value = DemoNodeValue.number(round(slider.value))
             
             demoModel.updateDescendantNodes(selectedNode).forEach{ shinpuruNodeUI.reloadNode($0) }
         }
@@ -122,7 +122,7 @@ class ViewController: UIViewController
     {
         if let selectedNode = shinpuruNodeUI.selectedNode?.demoNode 
         {
-            selectedNode.type = isOperatorSwitch.on
+            selectedNode.type = isOperatorSwitch.isOn
                 ? DemoNodeType.Add
                 : DemoNodeType.Numeric
             
@@ -140,7 +140,7 @@ class ViewController: UIViewController
     {
         super.viewDidLayoutSubviews()
         
-        let controlsStackViewHeight = max(slider.intrinsicContentSize().height, operatorsControl.intrinsicContentSize().height)
+        let controlsStackViewHeight = max(slider.intrinsicContentSize.height, operatorsControl.intrinsicContentSize.height)
         
         shinpuruNodeUI.frame = CGRect(x: 0,
             y: topLayoutGuide.length,
@@ -156,67 +156,67 @@ class ViewController: UIViewController
 
 extension ViewController: SNDelegate
 {
-    func dataProviderForView(view: SNView) -> [SNNode]?
+    func dataProviderForView(_ view: SNView) -> [SNNode]?
     {
         return demoModel.nodes
     }
     
-    func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
+    func itemRendererForView(_ view: SNView, node: SNNode) -> SNItemRenderer
     {
         return DemoRenderer(node: node)
     }
     
-    func inputRowRendererForView(view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(_ view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
     {
         return DemoInputRowRenderer(index: index, inputNode: inputNode, parentNode: parentNode)
     }
     
-    func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
+    func outputRowRendererForView(_ view: SNView, node: SNNode) -> SNOutputRowRenderer
     {
         return DemoOutputRowRenderer(node: node)
     }
     
-    func nodeSelectedInView(view: SNView, node: SNNode?)
+    func nodeSelectedInView(_ view: SNView, node: SNNode?)
     {
         guard let node = node?.demoNode else
         {
-            slider.enabled = false
-            operatorsControl.enabled = false
-            isOperatorSwitch.enabled = false
+            slider.isEnabled = false
+            operatorsControl.isEnabled = false
+            isOperatorSwitch.isEnabled = false
             
             return
         }
         
-        isOperatorSwitch.enabled = true
+        isOperatorSwitch.isEnabled = true
         
         switch node.type
         {
         case .Numeric:
-            slider.enabled = true
-            operatorsControl.enabled = false
+            slider.isEnabled = true
+            operatorsControl.isEnabled = false
             operatorsControl.selectedSegmentIndex = -1
-            isOperatorSwitch.on = false
+            isOperatorSwitch.isOn = false
             
             slider.value = node.value?.floatValue ?? 0
             
         case .Add, .Subtract, .Multiply, .Divide, .Color, .ColorAdjust:
-            slider.enabled = false
-            operatorsControl.enabled = true
-            isOperatorSwitch.on = true
+            slider.isEnabled = false
+            operatorsControl.isEnabled = true
+            isOperatorSwitch.isOn = true
             
-            if let targetIndex = DemoNodeType.operators.indexOf(DemoNodeType(rawValue: node.type.rawValue)!)
+            if let targetIndex = DemoNodeType.operators.index(of: DemoNodeType(rawValue: node.type.rawValue)!)
             {
                 operatorsControl.selectedSegmentIndex = targetIndex
             }
         }
     }
     
-    func nodeMovedInView(view: SNView, node: SNNode)
+    func nodeMovedInView(_ view: SNView, node: SNNode)
     {
         // handle a node move - save to CoreData?
     }
     
-    func nodeCreatedInView(view: SNView, position: CGPoint)
+    func nodeCreatedInView(_ view: SNView, position: CGPoint)
     {
         let newNode = demoModel.addNodeAt(position)
         
@@ -225,7 +225,7 @@ extension ViewController: SNDelegate
         view.selectedNode = newNode
     }
     
-    func nodeDeletedInView(view: SNView, node: SNNode)
+    func nodeDeletedInView(_ view: SNView, node: SNNode)
     {
         if let node = node.demoNode
         {
@@ -235,24 +235,24 @@ extension ViewController: SNDelegate
         }
     }
     
-    func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    func relationshipToggledInView(_ view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
         if let targetNode = targetNode.demoNode,
-            sourceNode = sourceNode.demoNode
+            let sourceNode = sourceNode.demoNode
         {
             demoModel.toggleRelationship(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex).forEach{ view.reloadNode($0) }
         }
     }
     
-    func defaultNodeSize(view: SNView) -> CGSize
+    func defaultNodeSize(_ view: SNView) -> CGSize
     {
         return CGSize(width: DemoWidgetWidth, height: DemoWidgetWidth + SNNodeWidget.titleBarHeight * 2)
     }
     
-    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool
+    func nodesAreRelationshipCandidates(_ sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool
     {
         guard let sourceNode = sourceNode.demoNode,
-            targetNode = targetNode.demoNode else
+            let targetNode = targetNode.demoNode else
         {
             return false
         }

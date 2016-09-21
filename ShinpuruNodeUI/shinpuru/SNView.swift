@@ -25,9 +25,9 @@ let SNViewAnimationDuration = 0.2
 
 class SNView: UIScrollView, UIScrollViewDelegate
 {
-    private var widgetsDictionary = [SNNode: SNNodeWidget]()
-    private let curvesLayer = SNRelationshipCurvesLayer()
-    private let nodesContainer = SNNodesContainer(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
+    fileprivate var widgetsDictionary = [SNNode: SNNodeWidget]()
+    fileprivate let curvesLayer = SNRelationshipCurvesLayer()
+    fileprivate let nodesContainer = SNNodesContainer(frame: CGRect(x: 0, y: 0, width: 5000, height: 5000))
 
     var nodes: [SNNode]?
     {
@@ -46,18 +46,18 @@ class SNView: UIScrollView, UIScrollViewDelegate
     {
         didSet
         {
-            UIView.animateWithDuration(SNViewAnimationDuration)
-            {
+            UIView.animate(withDuration: SNViewAnimationDuration, animations: {
                 self.nodesContainer.backgroundColor = self.relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
-            }
+            })
             
-            if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
+            
+            if let nodes = nodes, let selectedNode = selectedNode, let nodeDelegate = nodeDelegate
             {
                 for node in nodes where widgetsDictionary[node] != nil 
                 {
                     if let widget = widgetsDictionary[node]
                     {
-                        for (index, inputRowRenderer) in widget.inputRowRenderers.enumerate()
+                        for (index, inputRowRenderer) in widget.inputRowRenderers.enumerated()
                         {
                             let isRelationshipCandidate = nodeDelegate.nodesAreRelationshipCandidates(selectedNode,
                                 targetNode: node,
@@ -87,7 +87,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             if let selectedNode = selectedNode
             {
-                widgetsDictionary[selectedNode]?.layer.shadowColor = UIColor.yellowColor().CGColor
+                widgetsDictionary[selectedNode]?.layer.shadowColor = UIColor.yellow.cgColor
                 widgetsDictionary[selectedNode]?.layer.shadowRadius = 10
                 widgetsDictionary[selectedNode]?.layer.shadowOpacity = 1
                 widgetsDictionary[selectedNode]?.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -101,7 +101,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         maximumZoomScale = 2.0
         delegate = self
         
-        backgroundColor = UIColor.blackColor()
+        backgroundColor = .black
   
         nodesContainer.layer.addSublayer(curvesLayer)
         
@@ -109,35 +109,35 @@ class SNView: UIScrollView, UIScrollViewDelegate
         
         renderNodes()
         
-        let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SNView.longPressHandler(_:)))
         nodesContainer.addGestureRecognizer(longPress)
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        super.touchesBegan(touches, withEvent: event)
+        super.touchesBegan(touches, with: event)
         
         relationshipCreationMode = false
     }
     
-    func longPressHandler(recognizer: UILongPressGestureRecognizer)
+    func longPressHandler(_ recognizer: UILongPressGestureRecognizer)
     {
-        if let nodeDelegate = nodeDelegate where recognizer.state == UIGestureRecognizerState.Began
+        if let nodeDelegate = nodeDelegate , recognizer.state == .began
         {
             let newPodePosition = CGPoint(
-                x: recognizer.locationInView(nodesContainer).x - nodeDelegate.defaultNodeSize(self).width / 2,
-                y: recognizer.locationInView(nodesContainer).y - nodeDelegate.defaultNodeSize(self).height / 2)
+                x: recognizer.location(in: nodesContainer).x - nodeDelegate.defaultNodeSize(self).width / 2,
+                y: recognizer.location(in: nodesContainer).y - nodeDelegate.defaultNodeSize(self).height / 2)
             
             nodeDelegate.nodeCreatedInView(self, position: newPodePosition)
         }
     }
     
-    func reloadNode(node: SNNode)
+    func reloadNode(_ node: SNNode)
     {
         let widget = createWidgetForNode(node)
         
         guard let nodes = nodes,
-            itemRenderer = widget.itemRenderer else
+            let itemRenderer = widget.itemRenderer else
         {
             return
         }
@@ -169,14 +169,14 @@ class SNView: UIScrollView, UIScrollViewDelegate
         }
     }
     
-    func nodeDeleted(node: SNNode)
+    func nodeDeleted(_ node: SNNode)
     {
         if let widget = widgetsDictionary[node],
-            nodes = nodes
+            let nodes = nodes
         {
             selectedNode = nil
             
-            widgetsDictionary.removeValueForKey(node)
+            widgetsDictionary.removeValue(forKey: node)
             
             widget.removeFromSuperview()
             
@@ -193,7 +193,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         nodeDelegate?.nodeDeletedInView(self, node: node)
     }
     
-    func nodeMoved(node: SNNode)
+    func nodeMoved(_ node: SNNode)
     {
         nodeDelegate?.nodeMovedInView(self, node: node)
         renderRelationships(focussedNode: node)
@@ -214,7 +214,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         renderRelationships()
     }
     
-    func createWidgetForNode(node: SNNode) -> SNNodeWidget
+    func createWidgetForNode(_ node: SNNode) -> SNNodeWidget
     {
         if let widget = widgetsDictionary[node]
         {
@@ -228,15 +228,15 @@ class SNView: UIScrollView, UIScrollViewDelegate
             
             nodesContainer.addSubview(widget)
             
-            nodesContainer.bringSubviewToFront(widget)
+            nodesContainer.bringSubview(toFront: widget)
             
             return widget
         }
     }
     
-    func toggleRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
+    func toggleRelationship(targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        guard let sourceNode = selectedNode, nodeDelegate = nodeDelegate where
+        guard let sourceNode = selectedNode, let nodeDelegate = nodeDelegate ,
             relationshipCreationMode && nodeDelegate.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
             else
         {
@@ -246,7 +246,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         
         if targetNode.inputs != nil && targetNodeInputIndex < targetNode.inputs?.count
         {
-            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
+            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] ,
                 existingRelationshipNode != sourceNode
             {
                 curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
@@ -279,18 +279,18 @@ class SNView: UIScrollView, UIScrollViewDelegate
         }
     }
     
-    func renderRelationships(inputsChangedNodes inputsChangedNodes: SNNode)
+    func renderRelationships(inputsChangedNodes: SNNode)
     {
         renderRelationships(deletedNode: inputsChangedNodes)
         renderRelationships(focussedNode: inputsChangedNodes)
     }
     
-    func renderRelationships(deletedNode deletedNode: SNNode)
+    func renderRelationships(deletedNode: SNNode)
     {
         curvesLayer.deleteNodeRelationships(deletedNode)
     }
     
-    func renderRelationships(focussedNode focussedNode: SNNode? = nil)
+    func renderRelationships(focussedNode: SNNode? = nil)
     {
         if let nodes = nodes
         {
@@ -298,7 +298,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         }
     }
     
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView?
+    func viewForZooming(in scrollView: UIScrollView) -> UIView?
     {
         return nodesContainer
     }

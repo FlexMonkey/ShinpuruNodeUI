@@ -24,7 +24,7 @@ import UIKit
 
 class SNNode: Equatable, Hashable
 {
-    let uuid  = NSUUID()
+    let uuid  = UUID()
     
     var numInputSlots: Int = 0
     var inputs: [SNNode?]?
@@ -42,7 +42,7 @@ class SNNode: Equatable, Hashable
         return uuid.hashValue
     }
     
-    func isAscendant(node: SNNode) -> Bool // TO DO test long chain
+    func isAscendant(_ node: SNNode) -> Bool // TO DO test long chain
     {
         guard let inputs = inputs else
         {
@@ -67,7 +67,7 @@ class SNNode: Equatable, Hashable
 
 func == (lhs: SNNode, rhs: SNNode) -> Bool
 {
-    return lhs.uuid.isEqual(rhs.uuid)
+    return (lhs.uuid == rhs.uuid)
 }
 
 /// Node Pair - used as a dictionary key in relationship curves layer
@@ -93,27 +93,27 @@ func == (lhs: SNNodePair, rhs: SNNodePair) -> Bool
 
 protocol SNDelegate: NSObjectProtocol
 {
-    func dataProviderForView(view: SNView) -> [SNNode]?
+    func dataProviderForView(_ view: SNView) -> [SNNode]?
     
-    func itemRendererForView(view: SNView, node: SNNode) -> SNItemRenderer
+    func itemRendererForView(_ view: SNView, node: SNNode) -> SNItemRenderer
     
-    func inputRowRendererForView(view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
+    func inputRowRendererForView(_ view: SNView, inputNode: SNNode?, parentNode: SNNode, index: Int) -> SNInputRowRenderer
     
-    func outputRowRendererForView(view: SNView, node: SNNode) -> SNOutputRowRenderer
+    func outputRowRendererForView(_ view: SNView, node: SNNode) -> SNOutputRowRenderer
     
-    func nodeSelectedInView(view: SNView, node: SNNode?)
+    func nodeSelectedInView(_ view: SNView, node: SNNode?)
     
-    func nodeMovedInView(view: SNView, node: SNNode)
+    func nodeMovedInView(_ view: SNView, node: SNNode)
     
-    func nodeCreatedInView(view: SNView, position: CGPoint)
+    func nodeCreatedInView(_ view: SNView, position: CGPoint)
     
-    func nodeDeletedInView(view: SNView, node: SNNode)
+    func nodeDeletedInView(_ view: SNView, node: SNNode)
     
-    func relationshipToggledInView(view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    func relationshipToggledInView(_ view: SNView, sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     
-    func defaultNodeSize(view: SNView) -> CGSize
+    func defaultNodeSize(_ view: SNView) -> CGSize
     
-    func nodesAreRelationshipCandidates(sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool 
+    func nodesAreRelationshipCandidates(_ sourceNode: SNNode, targetNode: SNNode, targetIndex: Int) -> Bool 
 }
 
 /// Base class for node item renderer
@@ -126,7 +126,7 @@ class SNItemRenderer: UIView
     {
         self.node = node
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -150,7 +150,7 @@ class SNOutputRowRenderer: UIView
     {
         self.node = node
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
     
     func reload()
@@ -179,7 +179,7 @@ class SNInputRowRenderer: UIView
         self.inputNode = inputNode
         self.parentNode = parentNode
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
 
     func reload()

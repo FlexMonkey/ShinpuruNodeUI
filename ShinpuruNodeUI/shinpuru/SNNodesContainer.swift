@@ -48,17 +48,17 @@ class SNNodesContainer: UIView
         
         for i in 0...50
         {
-            gridPath.moveToPoint(CGPoint(x: i * hGap, y: 0))
-            gridPath.addLineToPoint((CGPoint(x: i * hGap, y: height)))
+            gridPath.move(to: CGPoint(x: i * hGap, y: 0))
+            gridPath.addLine(to: (CGPoint(x: i * hGap, y: height)))
             
-            gridPath.moveToPoint(CGPoint(x: 0, y: i * vGap))
-            gridPath.addLineToPoint((CGPoint(x: width, y: i * vGap)))
+            gridPath.move(to: CGPoint(x: 0, y: i * vGap))
+            gridPath.addLine(to: (CGPoint(x: width, y: i * vGap)))
         }
         
-        gridLayer.strokeColor = UIColor(white: 0.2, alpha: 1).CGColor
+        gridLayer.strokeColor = UIColor(white: 0.2, alpha: 1).cgColor
         gridLayer.lineWidth = 2
         
-        gridLayer.path = gridPath.CGPath
+        gridLayer.path = gridPath.cgPath
         
         layer.addSublayer(gridLayer)
     }

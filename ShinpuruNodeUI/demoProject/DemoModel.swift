@@ -26,8 +26,8 @@ struct DemoModel
     
     init() 
     {
-        let one = DemoNode(name: "One", position: CGPoint(x: 210, y: 10), value: DemoNodeValue.Number(1))
-        let two = DemoNode(name: "Two", position: CGPoint(x: 220, y: 350), value: DemoNodeValue.Number(2))
+        let one = DemoNode(name: "One", position: CGPoint(x: 210, y: 10), value: DemoNodeValue.number(1))
+        let two = DemoNode(name: "Two", position: CGPoint(x: 220, y: 350), value: DemoNodeValue.number(2))
         let add = DemoNode(name: "Add", position: CGPoint(x: 570, y: 170), type: DemoNodeType.Add, inputs: [one, nil, two])
         
         nodes = [one, two, add]
@@ -36,7 +36,7 @@ struct DemoModel
         updateDescendantNodes(two)
     }
     
-    mutating func toggleRelationship(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> [DemoNode]
+    mutating func toggleRelationship(_ sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> [DemoNode]
     {
         if targetNode.inputs == nil
         {
@@ -65,47 +65,47 @@ struct DemoModel
         }
     }
     
-    mutating func deleteNode(deletedNode: DemoNode) -> [DemoNode]
+    mutating func deleteNode(_ deletedNode: DemoNode) -> [DemoNode]
     {
         var updatedNodes = [DemoNode]()
         
-        for node in nodes where node.inputs != nil && node.inputs!.contains({$0 == deletedNode})
+        for node in nodes where node.inputs != nil && node.inputs!.contains(where: {$0 == deletedNode})
         {
-            for (idx, inputNode) in node.inputs!.enumerate() where inputNode == deletedNode
+            for (idx, inputNode) in node.inputs!.enumerated() where inputNode == deletedNode
             {
                 node.inputs?[idx] = nil
                 
                 node.recalculate()
                 
-                updatedNodes.appendContentsOf(updateDescendantNodes(node))
+                updatedNodes.append(contentsOf: updateDescendantNodes(node))
             }
         }
         
-        if let deletedNodeIndex = nodes.indexOf(deletedNode)
+        if let deletedNodeIndex = nodes.index(of: deletedNode)
         {
-            nodes.removeAtIndex(deletedNodeIndex)
+            nodes.remove(at: deletedNodeIndex)
         }
         
         return updatedNodes
     }
     
-    mutating func addNodeAt(position: CGPoint) -> DemoNode
+    mutating func addNodeAt(_ position: CGPoint) -> DemoNode
     {
-        let newNode = DemoNode(name: "New!", position: position, value: DemoNodeValue.Number(1))
+        let newNode = DemoNode(name: "New!", position: position, value: DemoNodeValue.number(1))
         
         nodes.append(newNode)
         
         return newNode
     }
     
-    func updateDescendantNodes(sourceNode: DemoNode, forceNode: DemoNode? = nil) -> [DemoNode]
+    func updateDescendantNodes(_ sourceNode: DemoNode, forceNode: DemoNode? = nil) -> [DemoNode]
     {
         var updatedDatedNodes = [[sourceNode]]
         
         for targetNode in nodes where targetNode != sourceNode
         {
             if let inputs = targetNode.inputs,
-                targetNode = targetNode.demoNode where inputs.contains({$0 == sourceNode}) || targetNode == forceNode
+                let targetNode = targetNode.demoNode , inputs.contains(where: {$0 == sourceNode}) || targetNode == forceNode
             {
                 targetNode.recalculate()
                 
@@ -116,7 +116,7 @@ struct DemoModel
         return Array(Set<DemoNode>(updatedDatedNodes.flatMap{ $0 })) 
     }
     
-    static func nodesAreRelationshipCandidates(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> Bool
+    static func nodesAreRelationshipCandidates(_ sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> Bool
     {
         // TODO - prevent circular! recursive function 
         

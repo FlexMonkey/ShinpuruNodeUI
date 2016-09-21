@@ -12,7 +12,7 @@ typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
 
 extension UIColor
 {
-    func multiply(value: CGFloat) -> UIColor
+    func multiply(_ value: CGFloat) -> UIColor
     {
         let newRed = getRGBA().red * value
         let newGreen = getRGBA().green * value
@@ -23,31 +23,31 @@ extension UIColor
     
     func getRGBA() -> RGBA
     {
-        func zeroIfDodgy(value: CGFloat) -> CGFloat
+        func zeroIfDodgy(_ value: CGFloat) -> CGFloat
         {
-            return isnan(value) || isinf(value) ? 0 : value
+            return value.isNaN || value.isInfinite ? 0 : value
         }
         
-        if CGColorGetNumberOfComponents(self.CGColor) == 4
+        if self.cgColor.numberOfComponents == 4
         {
-            let colorRef = CGColorGetComponents(self.CGColor);
+            let colorRef = self.cgColor.components;
             
-            let redComponent = zeroIfDodgy(colorRef[0])
-            let greenComponent = zeroIfDodgy(colorRef[1])
-            let blueComponent = zeroIfDodgy(colorRef[2])
-            let alphaComponent = zeroIfDodgy(colorRef[3])
+            let redComponent = zeroIfDodgy((colorRef?[0])!)
+            let greenComponent = zeroIfDodgy((colorRef?[1])!)
+            let blueComponent = zeroIfDodgy((colorRef?[2])!)
+            let alphaComponent = zeroIfDodgy((colorRef?[3])!)
             
             return RGBA(red: redComponent,
                 green: greenComponent,
                 blue: blueComponent,
                 alpha: alphaComponent)
         }
-        else if CGColorGetNumberOfComponents(self.CGColor) == 2
+        else if self.cgColor.numberOfComponents == 2
         {
-            let colorRef = CGColorGetComponents(self.CGColor);
+            let colorRef = self.cgColor.components;
             
-            let greyComponent = zeroIfDodgy(colorRef[0])
-            let alphaComponent = zeroIfDodgy(colorRef[1])
+            let greyComponent = zeroIfDodgy((colorRef?[0])!)
+            let alphaComponent = zeroIfDodgy((colorRef?[1])!)
             
             return RGBA(red: greyComponent,
                 green: greyComponent,

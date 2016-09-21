@@ -20,6 +20,7 @@
 
 import UIKit
 
+
 class SNNodeWidget: UIView
 {
     static let titleBarHeight: CGFloat = 44
@@ -36,17 +37,17 @@ class SNNodeWidget: UIView
         self.view = view
         self.node = node
         
-        super.init(frame: CGRect(origin: node.position, size: CGSizeZero))
+        super.init(frame: CGRect(origin: node.position, size: .zero))
         
-        let pan = UIPanGestureRecognizer(target: self, action: "panHandler:")
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(SNNodeWidget.panHandler(_:)))
         addGestureRecognizer(pan)
         
-        let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SNNodeWidget.longPressHandler(_:)))
         addGestureRecognizer(longPress)
         
         setNeedsLayout()
         
-        layer.borderColor = UIColor.whiteColor().CGColor
+        layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 2
         
         alpha = 0
@@ -56,14 +57,14 @@ class SNNodeWidget: UIView
     {
         if superview != nil
         {
-            UIView.animateWithDuration(SNViewAnimationDuration,
+            UIView.animate(withDuration: SNViewAnimationDuration,
                 animations: {self.alpha = 1})
         }
     }
     
     override func removeFromSuperview()
     {
-        UIView.animateWithDuration(SNViewAnimationDuration,
+        UIView.animate(withDuration: SNViewAnimationDuration,
             animations: {self.alpha = 0},
             completion: {(_) in super.removeFromSuperview()})
     }
@@ -73,7 +74,7 @@ class SNNodeWidget: UIView
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var _itemRenderer: SNItemRenderer?
+    fileprivate var _itemRenderer: SNItemRenderer?
     
     var itemRenderer: SNItemRenderer?
     {
@@ -85,7 +86,7 @@ class SNNodeWidget: UIView
         return _itemRenderer
     }
     
-    private var _outputRenderer: SNOutputRowRenderer?
+    fileprivate var _outputRenderer: SNOutputRowRenderer?
     
     var outputRenderer: SNOutputRowRenderer?
     {
@@ -100,7 +101,7 @@ class SNNodeWidget: UIView
     func buildUserInterface()
     {
         guard let itemRenderer = itemRenderer,
-            outputRenderer = outputRenderer else
+            let outputRenderer = outputRenderer else
         {
             return
         }
@@ -127,7 +128,7 @@ class SNNodeWidget: UIView
         
         titleBar.frame = CGRect(x: 1,
             y: 0,
-            width: itemRenderer.intrinsicContentSize().width,
+            width: itemRenderer.intrinsicContentSize.width,
             height: SNNodeWidget.titleBarHeight)
         
         // main item renderer
@@ -136,8 +137,8 @@ class SNNodeWidget: UIView
         
         itemRenderer.frame = CGRect(x: 1,
             y: SNNodeWidget.titleBarHeight,
-            width: itemRenderer.intrinsicContentSize().width,
-            height: itemRenderer.intrinsicContentSize().height)
+            width: itemRenderer.intrinsicContentSize.width,
+            height: itemRenderer.intrinsicContentSize.height)
         
         inputRowRenderers.removeAll()
         var inputOutputRowsHeight: CGFloat = SNNodeWidget.titleBarHeight
@@ -151,11 +152,11 @@ class SNNodeWidget: UIView
                 inputRowRenderers.append(inputRowRenderer)
                 
                 inputRowRenderer.frame = CGRect(x: 1,
-                    y: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight,
-                    width: inputRowRenderer.intrinsicContentSize().width,
-                    height: inputRowRenderer.intrinsicContentSize().height)
+                    y: itemRenderer.intrinsicContentSize.height + inputOutputRowsHeight,
+                    width: inputRowRenderer.intrinsicContentSize.width,
+                    height: inputRowRenderer.intrinsicContentSize.height)
                 
-                inputOutputRowsHeight += inputRowRenderer.intrinsicContentSize().height
+                inputOutputRowsHeight += inputRowRenderer.intrinsicContentSize.height
         
                 if i < node.inputs?.count
                 {
@@ -172,16 +173,16 @@ class SNNodeWidget: UIView
         addSubview(outputRenderer)
         
         outputRenderer.frame = CGRect(x: 1,
-            y: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight,
-            width: outputRenderer.intrinsicContentSize().width,
-            height: outputRenderer.intrinsicContentSize().height)
+            y: itemRenderer.intrinsicContentSize.height + inputOutputRowsHeight,
+            width: outputRenderer.intrinsicContentSize.width,
+            height: outputRenderer.intrinsicContentSize.height)
         
-        inputOutputRowsHeight += outputRenderer.intrinsicContentSize().height
+        inputOutputRowsHeight += outputRenderer.intrinsicContentSize.height
         
         frame = CGRect(x: frame.origin.x,
             y: frame.origin.y,
-            width: itemRenderer.intrinsicContentSize().width + 2,
-            height: itemRenderer.intrinsicContentSize().height + inputOutputRowsHeight)
+            width: itemRenderer.intrinsicContentSize.width + 2,
+            height: itemRenderer.intrinsicContentSize.height + inputOutputRowsHeight)
     }
     
     override func layoutSubviews()
@@ -191,13 +192,13 @@ class SNNodeWidget: UIView
         buildUserInterface()
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        self.superview?.bringSubviewToFront(self)
+        self.superview?.bringSubview(toFront: self)
         
-        if let touchLocation = touches.first?.locationInView(self),
-            inputNodeWidget = self.hitTest(touchLocation, withEvent: event) as? SNInputRowRenderer,
-            targetNodeInputIndex = inputRowRenderers.indexOf(inputNodeWidget)
+        if let touchLocation = touches.first?.location(in: self),
+            let inputNodeWidget = self.hitTest(touchLocation, with: event) as? SNInputRowRenderer,
+            let targetNodeInputIndex = inputRowRenderers.index(of: inputNodeWidget)
         {
             view.toggleRelationship(targetNode: node, targetNodeInputIndex: targetNodeInputIndex)
         }
@@ -212,27 +213,27 @@ class SNNodeWidget: UIView
         view.nodeDeleted(node)
     }
     
-    func longPressHandler(recognizer: UILongPressGestureRecognizer)
+    func longPressHandler(_ recognizer: UILongPressGestureRecognizer)
     {
-        if recognizer.state == UIGestureRecognizerState.Began
+        if recognizer.state == .began
         {
             view.relationshipCreationMode = true
         }
     }
     
-    func panHandler(recognizer: UIPanGestureRecognizer)
+    func panHandler(_ recognizer: UIPanGestureRecognizer)
     {
-        if recognizer.state == UIGestureRecognizerState.Began
+        if recognizer.state == .began
         {
-            previousPanPoint = recognizer.locationInView(self.superview)
+            previousPanPoint = recognizer.location(in: self.superview)
             
-            self.superview?.bringSubviewToFront(self)
+            self.superview?.bringSubview(toFront: self)
             
             view.selectedNode = node
         }
-        else if let previousPanPoint = previousPanPoint where recognizer.state == UIGestureRecognizerState.Changed
+        else if let previousPanPoint = previousPanPoint , recognizer.state == UIGestureRecognizerState.changed
         {
-            let gestureLocation = recognizer.locationInView(self.superview)
+            let gestureLocation = recognizer.location(in: self.superview)
             
             let deltaX = (gestureLocation.x - previousPanPoint.x)
             let deltaY = (gestureLocation.y - previousPanPoint.y) // consider.zoomScale
@@ -250,7 +251,7 @@ class SNNodeWidget: UIView
         }
     }
     
-    override func intrinsicContentSize() -> CGSize
+    override var intrinsicContentSize : CGSize
     {
         return CGSize(width: frame.width, height: frame.height)
     }
@@ -272,17 +273,17 @@ class SNWidgetTitleBar: UIToolbar
     
     override init(frame: CGRect)
     {
-        label = UIBarButtonItem(title: title, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        label = UIBarButtonItem(title: title, style: .plain, target: nil, action: nil)
         
         super.init(frame: frame)
 
-        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let trash = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteHandler")
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let trash = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(SNNodeWidget.deleteHandler))
         
         items = [label, spacer, trash]
         
-        tintColor = UIColor.whiteColor()
-        barTintColor = UIColor.darkGrayColor()
+        tintColor = .white
+        barTintColor = .darkGray
     }
 
     func deleteHandler()

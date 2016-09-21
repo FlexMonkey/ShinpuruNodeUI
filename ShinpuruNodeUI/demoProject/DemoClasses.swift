@@ -93,21 +93,21 @@ class DemoNode: SNNode
         switch type
         {
         case .Add:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue +
+            value = DemoNodeValue.number(getInputValueAt(0).floatValue +
                 getInputValueAt(1).floatValue +
                 getInputValueAt(2).floatValue)
             
         case .Subtract:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue - getInputValueAt(1).floatValue)
+            value = DemoNodeValue.number(getInputValueAt(0).floatValue - getInputValueAt(1).floatValue)
             
         case .Multiply:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue * getInputValueAt(1).floatValue)
+            value = DemoNodeValue.number(getInputValueAt(0).floatValue * getInputValueAt(1).floatValue)
             
         case .Divide:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue / getInputValueAt(1).floatValue)
+            value = DemoNodeValue.number(getInputValueAt(0).floatValue / getInputValueAt(1).floatValue)
             
         case .Numeric:
-            value = DemoNodeValue.Number(value?.floatValue ?? Float(0))
+            value = DemoNodeValue.number(value?.floatValue ?? Float(0))
             
         case .Color:
             let red = getInputValueAt(0).floatValue / 255
@@ -116,13 +116,13 @@ class DemoNode: SNNode
             
             let colorValue = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
             
-            value = DemoNodeValue.Color(colorValue)
+            value = DemoNodeValue.color(colorValue)
             
         case .ColorAdjust:
             let inputColor = getInputValueAt(0).colorValue
             let inputMultiplier = CGFloat(getInputValueAt(1).floatValue / 255)
             
-            value = DemoNodeValue.Color(inputColor.multiply(inputMultiplier))
+            value = DemoNodeValue.color(inputColor.multiply(inputMultiplier))
         }
         
         if let inputs = inputs
@@ -132,7 +132,7 @@ class DemoNode: SNNode
                 self.inputs = Array(inputs[0 ... type.numInputSlots - 1])
             }
             
-            for (idx, input) in self.inputs!.enumerate() where input?.demoNode != nil
+            for (idx, input) in self.inputs!.enumerated() where input?.demoNode != nil
             {
                 if !DemoModel.nodesAreRelationshipCandidates(input!.demoNode!, targetNode: self, targetIndex: idx)
                 {
@@ -142,11 +142,11 @@ class DemoNode: SNNode
         }
     }
     
-    func getInputValueAt(index: Int) -> DemoNodeValue
+    func getInputValueAt(_ index: Int) -> DemoNodeValue
     {
         if inputs == nil || index >= inputs?.count || inputs?[index] == nil || inputs?[index]?.demoNode == nil
         {
-            return DemoNodeValue.Number(0)
+            return DemoNodeValue.number(0)
         }
         else if let value = inputs?[index]?.demoNode?.value
         {
@@ -154,7 +154,7 @@ class DemoNode: SNNode
         }
         else
         {
-            return DemoNodeValue.Number(0)
+            return DemoNodeValue.number(0)
         }
     }
     
@@ -232,19 +232,19 @@ struct DemoNodeInputSlot
 
 enum DemoNodeValue
 {
-    case Number(Float?)
-    case Color(UIColor?)
+    case number(Float?)
+    case color(UIColor?)
 
     // empty values for type matching
     
     static func numberType() -> DemoNodeValue
     {
-        return DemoNodeValue.Number(nil)
+        return DemoNodeValue.number(nil)
     }
     
     static func colorType() -> DemoNodeValue
     {
-        return DemoNodeValue.Color(nil)
+        return DemoNodeValue.color(nil)
     }
     
     // get non-optional associated value
@@ -253,7 +253,7 @@ enum DemoNodeValue
     {
         switch self
         {
-        case .Number(let value):
+        case .number(let value):
             return value ?? 0
         default:
             return 0
@@ -264,11 +264,11 @@ enum DemoNodeValue
     {
         switch self
         {
-        case .Color(let value):
-            return value ?? UIColor.whiteColor()
+        case .color(let value):
+            return value ?? UIColor.white
             
         default:
-            return UIColor.whiteColor()
+            return UIColor.white
         }
     }
     
@@ -278,9 +278,9 @@ enum DemoNodeValue
     {
         switch self
         {
-        case .Number:
+        case .number:
             return SNNumberTypeName
-        case .Color:
+        case .color:
             return SNColorTypeName
         }
     }
