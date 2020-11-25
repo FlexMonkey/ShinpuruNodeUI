@@ -55,7 +55,7 @@ class SNNode: Equatable, Hashable
             {
                 return true
             }
-            else if inputNode != nil && inputNode!.isAscendant(node)
+            else if inputNode != nil && inputNode!.isAscendant(node: node)
             {
                 return true
             }
@@ -126,7 +126,7 @@ class SNItemRenderer: UIView
     {
         self.node = node
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -150,7 +150,7 @@ class SNOutputRowRenderer: UIView
     {
         self.node = node
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
     
     func reload()
@@ -179,7 +179,7 @@ class SNInputRowRenderer: UIView
         self.inputNode = inputNode
         self.parentNode = parentNode
         
-        super.init(frame: CGRectZero)
+        super.init(frame: .zero)
     }
 
     func reload()

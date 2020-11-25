@@ -32,8 +32,8 @@ struct DemoModel
         
         nodes = [one, two, add]
         
-        updateDescendantNodes(one)
-        updateDescendantNodes(two)
+        updateDescendantNodes(sourceNode: one)
+        updateDescendantNodes(sourceNode: two)
     }
     
     mutating func toggleRelationship(sourceNode: DemoNode, targetNode: DemoNode, targetIndex: Int) -> [DemoNode]
@@ -43,7 +43,7 @@ struct DemoModel
             targetNode.inputs = [DemoNode]()
         }
         
-        if targetIndex >= targetNode.inputs?.count
+        if targetIndex >= targetNode.inputs?.count ?? 0
         {
             for _ in 0 ... targetIndex - targetNode.inputs!.count
             {
@@ -55,13 +55,13 @@ struct DemoModel
         {
             targetNode.inputs![targetIndex] = nil
             
-            return updateDescendantNodes(sourceNode.demoNode!, forceNode: targetNode.demoNode!)
+            return updateDescendantNodes(sourceNode: sourceNode.demoNode!, forceNode: targetNode.demoNode!)
         }
         else
         {
             targetNode.inputs![targetIndex] = sourceNode
             
-            return updateDescendantNodes(sourceNode.demoNode!)
+            return updateDescendantNodes(sourceNode: sourceNode.demoNode!)
         }
     }
     
@@ -69,21 +69,21 @@ struct DemoModel
     {
         var updatedNodes = [DemoNode]()
         
-        for node in nodes where node.inputs != nil && node.inputs!.contains({$0 == deletedNode})
+        for node in nodes where node.inputs != nil && node.inputs!.contains(where: {$0 == deletedNode})
         {
-            for (idx, inputNode) in node.inputs!.enumerate() where inputNode == deletedNode
+            for (idx, inputNode) in node.inputs!.enumerated() where inputNode == deletedNode
             {
                 node.inputs?[idx] = nil
                 
                 node.recalculate()
                 
-                updatedNodes.appendContentsOf(updateDescendantNodes(node))
+                updatedNodes.append(contentsOf: updateDescendantNodes(sourceNode: node))
             }
         }
         
-        if let deletedNodeIndex = nodes.indexOf(deletedNode)
+        if let deletedNodeIndex = nodes.firstIndex(of: deletedNode)
         {
-            nodes.removeAtIndex(deletedNodeIndex)
+            nodes.remove(at: deletedNodeIndex)
         }
         
         return updatedNodes
@@ -105,11 +105,11 @@ struct DemoModel
         for targetNode in nodes where targetNode != sourceNode
         {
             if let inputs = targetNode.inputs,
-                targetNode = targetNode.demoNode where inputs.contains({$0 == sourceNode}) || targetNode == forceNode
+               let targetNode = targetNode.demoNode, inputs.contains(where: {$0 == sourceNode}) || targetNode == forceNode
             {
                 targetNode.recalculate()
                 
-                updatedDatedNodes.append(updateDescendantNodes(targetNode))
+                updatedDatedNodes.append(updateDescendantNodes(sourceNode: targetNode))
             }
         }
 
@@ -120,7 +120,7 @@ struct DemoModel
     {
         // TODO - prevent circular! recursive function 
         
-        if sourceNode.isAscendant(targetNode) || sourceNode == targetNode
+        if sourceNode.isAscendant(node: targetNode) || sourceNode == targetNode
         {
             return false
         }
