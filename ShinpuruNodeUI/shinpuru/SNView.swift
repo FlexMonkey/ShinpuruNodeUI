@@ -31,7 +31,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
 
     var nodes: [SNNode]?
     {
-        return nodeDelegate?.dataProviderForView(self)
+        return nodeDelegate?.dataProviderForView(view: self)
     }
     
     weak var nodeDelegate: SNDelegate?
@@ -46,20 +46,20 @@ class SNView: UIScrollView, UIScrollViewDelegate
     {
         didSet
         {
-            UIView.animateWithDuration(SNViewAnimationDuration)
+            UIView.animate(withDuration: SNViewAnimationDuration)
             {
                 self.nodesContainer.backgroundColor = self.relationshipCreationMode ? UIColor(white: 0.75, alpha: 0.75) : nil
             }
             
-            if let nodes = nodes, selectedNode = selectedNode, nodeDelegate = nodeDelegate
+            if let nodes = nodes, let selectedNode = selectedNode, let nodeDelegate = nodeDelegate
             {
                 for node in nodes where widgetsDictionary[node] != nil 
                 {
                     if let widget = widgetsDictionary[node]
                     {
-                        for (index, inputRowRenderer) in widget.inputRowRenderers.enumerate()
+                        for (index, inputRowRenderer) in widget.inputRowRenderers.enumerated()
                         {
-                            let isRelationshipCandidate = nodeDelegate.nodesAreRelationshipCandidates(selectedNode,
+                            let isRelationshipCandidate = nodeDelegate.nodesAreRelationshipCandidates(sourceNode: selectedNode,
                                 targetNode: node,
                                 targetIndex: index)
                             
@@ -82,12 +82,12 @@ class SNView: UIScrollView, UIScrollViewDelegate
                 widgetsDictionary[previousNode]?.layer.shadowOpacity = 0
             }
             
-            nodeDelegate?.nodeSelectedInView(self, node: selectedNode)
+            nodeDelegate?.nodeSelectedInView(view: self, node: selectedNode)
             relationshipCreationMode = false
             
             if let selectedNode = selectedNode
             {
-                widgetsDictionary[selectedNode]?.layer.shadowColor = UIColor.yellowColor().CGColor
+                widgetsDictionary[selectedNode]?.layer.shadowColor = UIColor.yellow.cgColor
                 widgetsDictionary[selectedNode]?.layer.shadowRadius = 10
                 widgetsDictionary[selectedNode]?.layer.shadowOpacity = 1
                 widgetsDictionary[selectedNode]?.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -101,7 +101,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         maximumZoomScale = 2.0
         delegate = self
         
-        backgroundColor = UIColor.blackColor()
+        backgroundColor = UIColor.black
   
         nodesContainer.layer.addSublayer(curvesLayer)
         
@@ -109,35 +109,35 @@ class SNView: UIScrollView, UIScrollViewDelegate
         
         renderNodes()
         
-        let longPress = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressHandler))
         nodesContainer.addGestureRecognizer(longPress)
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        super.touchesBegan(touches, withEvent: event)
+        super.touchesBegan(touches, with: event)
         
         relationshipCreationMode = false
     }
     
-    func longPressHandler(recognizer: UILongPressGestureRecognizer)
+    @objc func longPressHandler(recognizer: UILongPressGestureRecognizer)
     {
-        if let nodeDelegate = nodeDelegate where recognizer.state == UIGestureRecognizerState.Began
+        if let nodeDelegate = nodeDelegate, recognizer.state == UIGestureRecognizer.State.began
         {
             let newPodePosition = CGPoint(
-                x: recognizer.locationInView(nodesContainer).x - nodeDelegate.defaultNodeSize(self).width / 2,
-                y: recognizer.locationInView(nodesContainer).y - nodeDelegate.defaultNodeSize(self).height / 2)
+                x: recognizer.location(in: nodesContainer).x - nodeDelegate.defaultNodeSize(view: self).width / 2,
+                y: recognizer.location(in: nodesContainer).y - nodeDelegate.defaultNodeSize(view: self).height / 2)
             
-            nodeDelegate.nodeCreatedInView(self, position: newPodePosition)
+            nodeDelegate.nodeCreatedInView(view: self, position: newPodePosition)
         }
     }
     
     func reloadNode(node: SNNode)
     {
-        let widget = createWidgetForNode(node)
+        let widget = createWidgetForNode(node: node)
         
         guard let nodes = nodes,
-            itemRenderer = widget.itemRenderer else
+              let itemRenderer = widget.itemRenderer else
         {
             return
         }
@@ -172,11 +172,11 @@ class SNView: UIScrollView, UIScrollViewDelegate
     func nodeDeleted(node: SNNode)
     {
         if let widget = widgetsDictionary[node],
-            nodes = nodes
+           let nodes = nodes
         {
             selectedNode = nil
             
-            widgetsDictionary.removeValueForKey(node)
+            widgetsDictionary.removeValue(forKey: node)
             
             widget.removeFromSuperview()
             
@@ -190,12 +190,12 @@ class SNView: UIScrollView, UIScrollViewDelegate
             }
         }
         
-        nodeDelegate?.nodeDeletedInView(self, node: node)
+        nodeDelegate?.nodeDeletedInView(view: self, node: node)
     }
     
     func nodeMoved(node: SNNode)
     {
-        nodeDelegate?.nodeMovedInView(self, node: node)
+        nodeDelegate?.nodeMovedInView(view: self, node: node)
         renderRelationships(focussedNode: node)
     }
     
@@ -208,7 +208,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         
         for node in nodes
         {
-            createWidgetForNode(node)
+            createWidgetForNode(node: node)
         }
         
         renderRelationships()
@@ -234,19 +234,19 @@ class SNView: UIScrollView, UIScrollViewDelegate
         }
     }
     
-    func toggleRelationship(targetNode targetNode: SNNode, targetNodeInputIndex: Int)
+    func toggleRelationship(targetNode: SNNode, targetNodeInputIndex: Int)
     {
-        guard let sourceNode = selectedNode, nodeDelegate = nodeDelegate where
-            relationshipCreationMode && nodeDelegate.nodesAreRelationshipCandidates(sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
+        guard let sourceNode = selectedNode, let nodeDelegate = nodeDelegate,
+              relationshipCreationMode && nodeDelegate.nodesAreRelationshipCandidates(sourceNode: sourceNode, targetNode: targetNode, targetIndex: targetNodeInputIndex)
             else
         {
             relationshipCreationMode = false
             return
         }
         
-        if targetNode.inputs != nil && targetNodeInputIndex < targetNode.inputs?.count
+        if targetNode.inputs != nil && targetNodeInputIndex < targetNode.inputs?.count ?? 0
         {
-            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex] where
+            if let existingRelationshipNode = targetNode.inputs?[targetNodeInputIndex],
                 existingRelationshipNode != sourceNode
             {
                 curvesLayer.deleteSpecificRelationship(sourceNode: existingRelationshipNode,
@@ -255,7 +255,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
             }
         }
         
-        nodeDelegate.relationshipToggledInView(self,
+        nodeDelegate.relationshipToggledInView(view: self,
             sourceNode: sourceNode,
             targetNode: targetNode,
             targetNodeInputIndex: targetNodeInputIndex)
@@ -265,7 +265,7 @@ class SNView: UIScrollView, UIScrollViewDelegate
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].inputNode = targetNode.inputs?[targetNodeInputIndex]
         widgetsDictionary[targetNode]?.inputRowRenderers[targetNodeInputIndex].reload()
         
-        reloadNode(targetNode)
+        reloadNode(node: targetNode)
 
         if  targetNode.inputs?[targetNodeInputIndex] == sourceNode
         {
@@ -279,22 +279,22 @@ class SNView: UIScrollView, UIScrollViewDelegate
         }
     }
     
-    func renderRelationships(inputsChangedNodes inputsChangedNodes: SNNode)
+    func renderRelationships(inputsChangedNodes: SNNode)
     {
         renderRelationships(deletedNode: inputsChangedNodes)
         renderRelationships(focussedNode: inputsChangedNodes)
     }
     
-    func renderRelationships(deletedNode deletedNode: SNNode)
+    func renderRelationships(deletedNode: SNNode)
     {
-        curvesLayer.deleteNodeRelationships(deletedNode)
+        curvesLayer.deleteNodeRelationships(deletedNode: deletedNode)
     }
     
-    func renderRelationships(focussedNode focussedNode: SNNode? = nil)
+    func renderRelationships(focussedNode: SNNode? = nil)
     {
         if let nodes = nodes
         {
-            curvesLayer.renderRelationships(nodes, widgetsDictionary: widgetsDictionary, focussedNode: focussedNode)
+            curvesLayer.renderRelationships(nodes: nodes, widgetsDictionary: widgetsDictionary, focussedNode: focussedNode)
         }
     }
     

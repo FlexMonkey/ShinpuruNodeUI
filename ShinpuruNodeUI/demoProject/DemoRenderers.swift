@@ -29,12 +29,12 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.lightGrayColor()
+        backgroundColor = UIColor.lightGray
 
         addSubview(label)
         layer.addSublayer(line)
   
-        line.strokeColor = UIColor.whiteColor().CGColor
+        line.strokeColor = UIColor.white.cgColor
         line.lineWidth = 1
         
         if superview != nil
@@ -60,7 +60,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
     
     func updateLabel()
     {
-        guard let demoNode = parentNode.demoNode where index < parentNode.demoNode?.type.inputSlots.count else
+        guard let demoNode = parentNode.demoNode, index < parentNode.demoNode?.type.inputSlots.count ?? 0 else
         {
             label.text = ""
             return
@@ -82,7 +82,7 @@ class DemoInputRowRenderer: SNInputRowRenderer
         }
     }
     
-    override func intrinsicContentSize() -> CGSize
+    override var intrinsicContentSize: CGSize
     {
         return CGSize(width: DemoWidgetWidth, height: SNNodeWidget.titleBarHeight)
     }
@@ -92,16 +92,16 @@ class DemoInputRowRenderer: SNInputRowRenderer
         label.frame = bounds.insetBy(dx: 5, dy: 0)
         
         let linePath = UIBezierPath()
-        linePath.moveToPoint(CGPoint(x: 0, y: bounds.height))
-        linePath.addLineToPoint(CGPoint(x: bounds.width, y: bounds.height))
+        linePath.move(to: CGPoint(x: 0, y: bounds.height))
+        linePath.addLine(to: CGPoint(x: bounds.width, y: bounds.height))
         
         if index == 0
         {
-            linePath.moveToPoint(CGPoint(x: 0, y: 1))
-            linePath.addLineToPoint(CGPoint(x: bounds.width, y: 1))
+            linePath.move(to: CGPoint(x: 0, y: 1))
+            linePath.addLine(to: CGPoint(x: bounds.width, y: 1))
         }
         
-        line.path = linePath.CGPath
+        line.path = linePath.cgPath
     }
 }
 
@@ -114,15 +114,15 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.darkGrayColor()
+        backgroundColor = UIColor.darkGray
       
         addSubview(label)
         layer.addSublayer(line)
         
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = NSTextAlignment.Right
+        label.textColor = UIColor.white
+        label.textAlignment = NSTextAlignment.right
         
-        line.strokeColor = UIColor.whiteColor().CGColor
+        line.strokeColor = UIColor.white.cgColor
         line.lineWidth = 1
         
         if superview != nil
@@ -131,7 +131,7 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
         }
     }
     
-    override func intrinsicContentSize() -> CGSize
+    override var intrinsicContentSize: CGSize
     {
         return CGSize(width: DemoWidgetWidth, height: SNNodeWidget.titleBarHeight)
     }
@@ -151,10 +151,10 @@ class DemoOutputRowRenderer: SNOutputRowRenderer
         label.frame = bounds.insetBy(dx: 5, dy: 0)
         
         let linePath = UIBezierPath()
-        linePath.moveToPoint(CGPoint(x: 0, y: 0))
-        linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+        linePath.move(to: CGPoint(x: 0, y: 0))
+        linePath.addLine(to: CGPoint(x: bounds.width, y: 0))
   
-        line.path = linePath.CGPath
+        line.path = linePath.cgPath
     }
 }
 
@@ -172,14 +172,14 @@ class DemoRenderer: SNItemRenderer
         addSubview(label)
         layer.addSublayer(line)
         
-        colorSwatch.layer.borderColor = UIColor.blackColor().CGColor
+        colorSwatch.layer.borderColor = UIColor.black.cgColor
         colorSwatch.layer.borderWidth = 1
         
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.numberOfLines = 2
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
-        line.strokeColor = UIColor.whiteColor().CGColor
+        line.strokeColor = UIColor.white.cgColor
         line.lineWidth = 1
         
         if superview != nil
@@ -203,34 +203,34 @@ class DemoRenderer: SNItemRenderer
     
     func updateLabel()
     {
-        if let value = node?.demoNode?.value, type = node?.demoNode?.type
+        if let value = node?.demoNode?.value, let type = node?.demoNode?.type
         {
             switch value
             {
             case DemoNodeValue.Number(let floatValue):
                 label.text = "\(type) \n\(floatValue)"
-                backgroundColor = type.isOperator ? UIColor.blueColor() : UIColor.redColor()
+                backgroundColor = type.isOperator ? UIColor.blue : UIColor.red
                 colorSwatch.alpha = 0
                 label.frame = bounds
                 
             case DemoNodeValue.Color(let colorValue):
                 label.text = colorValue?.getHex()
-                backgroundColor = UIColor.purpleColor()
+                backgroundColor = UIColor.purple
                 colorSwatch.alpha = 1
                 colorSwatch.backgroundColor = colorValue
                 
                 label.frame = CGRect(x: 0,
-                    y: bounds.height - label.intrinsicContentSize().height - 5,
+                                     y: bounds.height - label.intrinsicContentSize.height - 5,
                     width: bounds.width,
-                    height: label.intrinsicContentSize().height)
+                    height: label.intrinsicContentSize.height)
             }
         }
         else
         {
             // TOODO - tidy this up
             backgroundColor = node?.demoNode?.type == DemoNodeType.Color || node?.demoNode?.type == DemoNodeType.ColorAdjust
-                ? UIColor.purpleColor()
-                : UIColor.blueColor()
+                ? UIColor.purple
+                : UIColor.blue
             
             colorSwatch.alpha = 0
         }
@@ -243,13 +243,13 @@ class DemoRenderer: SNItemRenderer
         colorSwatch.frame = bounds.insetBy(dx: 40, dy: 40)
         
         let linePath = UIBezierPath()
-        linePath.moveToPoint(CGPoint(x: 0, y: 0))
-        linePath.addLineToPoint(CGPoint(x: bounds.width, y: 0))
+        linePath.move(to: CGPoint(x: 0, y: 0))
+        linePath.addLine(to: CGPoint(x: bounds.width, y: 0))
         
-        line.path = linePath.CGPath
+        line.path = linePath.cgPath
     }
     
-    override func intrinsicContentSize() -> CGSize
+    override var intrinsicContentSize: CGSize
     {
         return CGSize(width: DemoWidgetWidth, height: DemoWidgetWidth)
     }

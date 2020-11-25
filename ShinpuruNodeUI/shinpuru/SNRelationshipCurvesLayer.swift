@@ -24,15 +24,15 @@ class SNRelationshipCurvesLayer: CALayer
 {
     var relationshipLayersDictionary = [SNNodePair: CAShapeLayer]()
     
-    func deleteSpecificRelationship(sourceNode sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
+    func deleteSpecificRelationship(sourceNode: SNNode, targetNode: SNNode, targetNodeInputIndex: Int)
     {
         let nodePair = SNNodePair(sourceNode: targetNode, targetNode: sourceNode, targetIndex: targetNodeInputIndex)
    
         if let relationshipLayer = relationshipLayersDictionary[nodePair]
         {
             relationshipLayer.removeFromSuperlayer()
-            
-            relationshipLayersDictionary.removeValueForKey(nodePair)
+
+            relationshipLayersDictionary.removeValue(forKey: nodePair)
         }
     }
     
@@ -41,8 +41,8 @@ class SNRelationshipCurvesLayer: CALayer
         for (key, value) in relationshipLayersDictionary where key.sourceNode == deletedNode || key.targetNode == deletedNode
         {
             value.removeFromSuperlayer()
-            
-            relationshipLayersDictionary.removeValueForKey(key)
+
+            relationshipLayersDictionary.removeValue(forKey: key)
         }
     }
     
@@ -60,7 +60,7 @@ class SNRelationshipCurvesLayer: CALayer
         {
             sourceNodeTargets = nodes.filter
             {
-                $0.inputs != nil && $0.inputs!.contains({ $0 == focussedNode })
+                $0.inputs != nil && $0.inputs!.contains(where: { $0 == focussedNode })
             }
         }
         else
@@ -80,29 +80,29 @@ class SNRelationshipCurvesLayer: CALayer
                 var inputRowsHeight: CGFloat = 0
                 
                 // draw relationships...
-                for (idx, targetNode) in inputs.enumerate()
+                for (idx, targetNode) in inputs.enumerated()
                 {
                     guard let targetNode = targetNode,
-                        targetWidget = widgetsDictionary[targetNode],
-                        targetOutputRow = targetWidget.outputRenderer,
-                        sourceItemRendererHeight = sourceWidget.itemRenderer?.intrinsicContentSize().height
+                        let targetWidget = widgetsDictionary[targetNode],
+                        let targetOutputRow = targetWidget.outputRenderer,
+                        let sourceItemRendererHeight = sourceWidget.itemRenderer?.intrinsicContentSize.height
                         else
                     {
                         if idx < sourceWidget.inputRowRenderers.count
                         {
-                            inputRowsHeight += sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
+                            inputRowsHeight += sourceWidget.inputRowRenderers[idx].intrinsicContentSize.height
                         }
                         continue
                     }
                     
                     if idx < sourceWidget.inputRowRenderers.count
                     {
-                        let targetWidgetHeight = targetWidget.intrinsicContentSize().height - targetOutputRow.intrinsicContentSize().height
-                        let targetWidgetWidth = targetWidget.intrinsicContentSize().width
-                        let rowHeight = sourceWidget.inputRowRenderers[idx].intrinsicContentSize().height
+                        let targetWidgetHeight = targetWidget.intrinsicContentSize.height - targetOutputRow.intrinsicContentSize.height
+                        let targetWidgetWidth = targetWidget.intrinsicContentSize.width
+                        let rowHeight = sourceWidget.inputRowRenderers[idx].intrinsicContentSize.height
                             
                         let inputPosition = CGPoint(x: targetNode.position.x + targetWidgetWidth,
-                            y: targetNode.position.y + CGFloat(targetWidgetHeight) + (targetOutputRow.intrinsicContentSize().height / 2))
+                            y: targetNode.position.y + CGFloat(targetWidgetHeight) + (targetOutputRow.intrinsicContentSize.height / 2))
                         
                         let targetY = sourceNode.position.y + inputRowsHeight + CGFloat(rowHeight / 2) + sourceItemRendererHeight + SNNodeWidget.titleBarHeight
                         
@@ -116,19 +116,19 @@ class SNRelationshipCurvesLayer: CALayer
                         
                         let relationshipCurvesPath = UIBezierPath()
                         
-                        drawTerminal(relationshipCurvesPath, position: inputPosition.offset(4, dy: 0))
-                        drawTerminal(relationshipCurvesPath, position: targetPosition.offset(-4, dy: 0))
+                        drawTerminal(relationshipCurvesPath: relationshipCurvesPath, position: inputPosition.offset(dx: 4, dy: 0))
+                        drawTerminal(relationshipCurvesPath: relationshipCurvesPath, position: targetPosition.offset(dx: -4, dy: 0))
                         
-                        relationshipCurvesPath.moveToPoint(targetPosition.offset(-4, dy: 0))
-                        relationshipCurvesPath.addCurveToPoint(inputPosition.offset(4, dy: 0), controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
+                        relationshipCurvesPath.move(to: targetPosition.offset(dx: -4, dy: 0))
+                        relationshipCurvesPath.addCurve(to: inputPosition.offset(dx: 4, dy: 0), controlPoint1: controlPointOne, controlPoint2: controlPointTwo)
                         
                         inputRowsHeight += rowHeight
                         
                         let nodePair = SNNodePair(sourceNode: sourceNode, targetNode: targetNode, targetIndex: idx)
                         
-                        let layer = layerForNodePair(nodePair)
+                        let layer = layerForNodePair(nodePair: nodePair)
                         
-                        layer.path = relationshipCurvesPath.CGPath
+                        layer.path = relationshipCurvesPath.cgPath
                     }
                 }
             }
@@ -143,13 +143,13 @@ class SNRelationshipCurvesLayer: CALayer
         {
             let layer = CAShapeLayer()
             
-            layer.strokeColor = UIColor.whiteColor().CGColor
+            layer.strokeColor = UIColor.white.cgColor
             layer.lineWidth = 4
             layer.fillColor = nil
-            layer.lineCap = kCALineCapSquare
+            layer.lineCap = .square
             
-            layer.shadowColor = UIColor.blackColor().CGColor
-            layer.shadowOffset = CGSizeZero
+            layer.shadowColor = UIColor.black.cgColor
+            layer.shadowOffset = .zero
             layer.shadowRadius = 2
             layer.shadowOpacity = 1
             
@@ -165,7 +165,7 @@ class SNRelationshipCurvesLayer: CALayer
     {
         let rect = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: position.x - 2, y: position.y - 2), size: CGSize(width: 4, height: 4)), cornerRadius: 0)
         
-        relationshipCurvesPath.appendPath(rect)
+        relationshipCurvesPath.append(rect)
     }
     
 }

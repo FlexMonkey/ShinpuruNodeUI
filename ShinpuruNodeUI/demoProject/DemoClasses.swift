@@ -93,36 +93,36 @@ class DemoNode: SNNode
         switch type
         {
         case .Add:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue +
-                getInputValueAt(1).floatValue +
-                getInputValueAt(2).floatValue)
+            value = DemoNodeValue.Number(getInputValueAt(index: 0).floatValue +
+                                            getInputValueAt(index: 1).floatValue +
+                                            getInputValueAt(index: 2).floatValue)
             
         case .Subtract:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue - getInputValueAt(1).floatValue)
+            value = DemoNodeValue.Number(getInputValueAt(index: 0).floatValue - getInputValueAt(index: 1).floatValue)
             
         case .Multiply:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue * getInputValueAt(1).floatValue)
+            value = DemoNodeValue.Number(getInputValueAt(index: 0).floatValue * getInputValueAt(index: 1).floatValue)
             
         case .Divide:
-            value = DemoNodeValue.Number(getInputValueAt(0).floatValue / getInputValueAt(1).floatValue)
+            value = DemoNodeValue.Number(getInputValueAt(index: 0).floatValue / getInputValueAt(index: 1).floatValue)
             
         case .Numeric:
             value = DemoNodeValue.Number(value?.floatValue ?? Float(0))
             
         case .Color:
-            let red = getInputValueAt(0).floatValue / 255
-            let green = getInputValueAt(1).floatValue / 255
-            let blue = getInputValueAt(2).floatValue / 255
+            let red = getInputValueAt(index: 0).floatValue / 255
+            let green = getInputValueAt(index: 1).floatValue / 255
+            let blue = getInputValueAt(index: 2).floatValue / 255
             
             let colorValue = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
             
             value = DemoNodeValue.Color(colorValue)
             
         case .ColorAdjust:
-            let inputColor = getInputValueAt(0).colorValue
-            let inputMultiplier = CGFloat(getInputValueAt(1).floatValue / 255)
+            let inputColor = getInputValueAt(index: 0).colorValue
+            let inputMultiplier = CGFloat(getInputValueAt(index: 1).floatValue / 255)
             
-            value = DemoNodeValue.Color(inputColor.multiply(inputMultiplier))
+            value = DemoNodeValue.Color(inputColor.multiply(value: inputMultiplier))
         }
         
         if let inputs = inputs
@@ -132,9 +132,9 @@ class DemoNode: SNNode
                 self.inputs = Array(inputs[0 ... type.numInputSlots - 1])
             }
             
-            for (idx, input) in self.inputs!.enumerate() where input?.demoNode != nil
+            for (idx, input) in self.inputs!.enumerated() where input?.demoNode != nil
             {
-                if !DemoModel.nodesAreRelationshipCandidates(input!.demoNode!, targetNode: self, targetIndex: idx)
+                if !DemoModel.nodesAreRelationshipCandidates(sourceNode: input!.demoNode!, targetNode: self, targetIndex: idx)
                 {
                     self.inputs?[idx] = nil
                 }
@@ -144,7 +144,7 @@ class DemoNode: SNNode
     
     func getInputValueAt(index: Int) -> DemoNodeValue
     {
-        if inputs == nil || index >= inputs?.count || inputs?[index] == nil || inputs?[index]?.demoNode == nil
+        if inputs == nil || index >= inputs?.count ?? 0 || inputs?[index] == nil || inputs?[index]?.demoNode == nil
         {
             return DemoNodeValue.Number(0)
         }
@@ -265,10 +265,10 @@ enum DemoNodeValue
         switch self
         {
         case .Color(let value):
-            return value ?? UIColor.whiteColor()
+            return value ?? UIColor.white
             
         default:
-            return UIColor.whiteColor()
+            return UIColor.white
         }
     }
     
